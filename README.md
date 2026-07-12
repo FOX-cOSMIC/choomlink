@@ -2,7 +2,7 @@
 
 > GTA-Online-style shared-world multiplayer for **Cyberpunk 2077** — a fork-in-planning of [TDUniverse/Cyberverse](https://github.com/TDUniverse/Cyberverse), aiming for 8 concurrent players in Night City. *"Choom"* = friend, choom.
 
-**Status: pre-development.** This repo is currently the project home / planning base. The actual code will start from a public fork of Cyberverse (MIT).
+**Status: pre-development.** This repo is the project home / planning base. The code lives in **[choomlink-core](https://github.com/FOX-cOSMIC/choomlink-core)** — our public fork of [TDUniverse/Cyberverse](https://github.com/TDUniverse/Cyberverse) (MIT, forked 2026-07-12).
 
 👉 **Start here: [START_HERE.md](START_HERE.md)** — the bootstrap document for the first development session (context, decisions, toolchain checklist, roadmap).
 
