@@ -1,11 +1,11 @@
 ---
 # choomlink-kr7z
 title: 'Stage A: server + 1 client on localhost'
-status: in-progress
+status: completed
 type: milestone
 priority: high
 created_at: 2026-07-12T07:01:46Z
-updated_at: 2026-07-12T15:33:55Z
+updated_at: 2026-07-12T15:36:48Z
 blocked_by:
     - choomlink-esjd
 ---

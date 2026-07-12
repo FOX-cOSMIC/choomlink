@@ -1,0 +1,305 @@
+<title>ChoomLink — Systeme & Risiken</title>
+<style>
+  :root {
+    --bg: #0e1116;
+    --bg-raise: #151a21;
+    --bg-inset: #0a0d11;
+    --ink: #e8e6dd;
+    --ink-mute: #97a0ac;
+    --line: #262d37;
+    --accent: #53d6dd;
+    --accent-dim: #2a6d72;
+    --marker: #f0d264;
+    --risk-high: #e5484d;
+    --risk-mid: #e8a33d;
+    --risk-low: #58a86b;
+    --mono: "Cascadia Code", Consolas, "Courier New", monospace;
+    --sans: "Segoe UI", -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f2f1ea; --bg-raise: #ffffff; --bg-inset: #e9e8df;
+      --ink: #1c2025; --ink-mute: #5c6570; --line: #d8d6ca;
+      --accent: #0e7c85; --accent-dim: #9fc9cd; --marker: #a07d00;
+      --risk-high: #c73338; --risk-mid: #a86a12; --risk-low: #3c7d4e;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1116; --bg-raise: #151a21; --bg-inset: #0a0d11;
+    --ink: #e8e6dd; --ink-mute: #97a0ac; --line: #262d37;
+    --accent: #53d6dd; --accent-dim: #2a6d72; --marker: #f0d264;
+    --risk-high: #e5484d; --risk-mid: #e8a33d; --risk-low: #58a86b;
+  }
+  :root[data-theme="light"] {
+    --bg: #f2f1ea; --bg-raise: #ffffff; --bg-inset: #e9e8df;
+    --ink: #1c2025; --ink-mute: #5c6570; --line: #d8d6ca;
+    --accent: #0e7c85; --accent-dim: #9fc9cd; --marker: #a07d00;
+    --risk-high: #c73338; --risk-mid: #a86a12; --risk-low: #3c7d4e;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.65;
+    margin: 0;
+    padding: 0 1.25rem;
+  }
+  main { max-width: 46rem; margin: 0 auto; padding: 3rem 0 6rem; }
+
+  h1, h2, h3 { font-family: var(--mono); text-wrap: balance; line-height: 1.25; }
+  h1 { font-size: 1.9rem; margin: 0.4rem 0 0.6rem; letter-spacing: -0.02em; }
+  h2 {
+    font-size: 1.25rem; margin: 3.2rem 0 1rem; padding-top: 1.6rem;
+    border-top: 1px solid var(--line); color: var(--accent);
+  }
+  h3 { font-size: 1.02rem; margin: 1.8rem 0 0.5rem; }
+  p { margin: 0.7rem 0; }
+  a { color: var(--accent); }
+  code {
+    font-family: var(--mono); font-size: 0.88em;
+    background: var(--bg-inset); padding: 0.08em 0.35em; border-radius: 3px;
+  }
+  .eyebrow {
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--marker); margin: 0;
+  }
+  .lede { font-size: 1.08rem; color: var(--ink-mute); margin-top: 0; }
+  .meta { font-family: var(--mono); font-size: 0.78rem; color: var(--ink-mute); }
+
+  .status-strip {
+    display: flex; flex-wrap: wrap; gap: 0.5rem 1.6rem; margin: 1.6rem 0 0;
+    padding: 0.9rem 1.1rem; background: var(--bg-raise);
+    border: 1px solid var(--line); border-left: 3px solid var(--accent);
+  }
+  .status-strip div { font-size: 0.85rem; }
+  .status-strip .k { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mute); display: block; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+  .table-wrap { overflow-x: auto; margin: 1rem 0; }
+  th { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-mute); text-align: left; }
+  th, td { padding: 0.5rem 0.9rem 0.5rem 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+
+  .sys {
+    background: var(--bg-raise); border: 1px solid var(--line);
+    padding: 1.1rem 1.3rem; margin: 1.1rem 0;
+  }
+  .sys h3 { margin: 0 0 0.15rem; }
+  .sys .path { font-family: var(--mono); font-size: 0.75rem; color: var(--ink-mute); }
+  .sys .why {
+    margin-top: 0.7rem; padding: 0.6rem 0.9rem; background: var(--bg-inset);
+    border-left: 2px solid var(--accent-dim); font-size: 0.92rem;
+  }
+  .sys .why b { color: var(--accent); font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 0.2rem; }
+  .state { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; padding: 0.12em 0.55em; border: 1px solid var(--line); border-radius: 999px; color: var(--ink-mute); white-space: nowrap; }
+  .state.ok { color: var(--risk-low); border-color: var(--risk-low); }
+  .sys-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+
+  ol.chain { list-style: none; counter-reset: step; padding: 0; margin: 1.2rem 0; }
+  ol.chain li {
+    counter-increment: step; position: relative; padding: 0.7rem 0 0.7rem 3.2rem;
+    border-bottom: 1px dashed var(--line);
+  }
+  ol.chain li::before {
+    content: counter(step, decimal-leading-zero); position: absolute; left: 0; top: 0.75rem;
+    font-family: var(--mono); color: var(--marker); font-size: 0.95rem;
+  }
+  ol.chain b { font-family: var(--mono); font-size: 0.9rem; }
+
+  .risk {
+    border: 1px solid var(--line); border-left-width: 4px;
+    background: var(--bg-raise); padding: 1rem 1.3rem; margin: 1rem 0;
+  }
+  .risk.high { border-left-color: var(--risk-high); }
+  .risk.mid  { border-left-color: var(--risk-mid); }
+  .risk.low  { border-left-color: var(--risk-low); }
+  .risk h3 { margin: 0; display: flex; align-items: baseline; gap: 0.7rem; flex-wrap: wrap; }
+  .sev { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em; padding: 0.1em 0.5em; border-radius: 2px; color: var(--bg); }
+  .high .sev { background: var(--risk-high); }
+  .mid  .sev { background: var(--risk-mid); }
+  .low  .sev { background: var(--risk-low); }
+  .risk .mitigation { font-size: 0.9rem; color: var(--ink-mute); margin-top: 0.6rem; }
+  .risk .mitigation b { color: var(--ink); font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; }
+
+  ul { padding-left: 1.2rem; }
+  li { margin: 0.3rem 0; }
+  .footnote { font-size: 0.82rem; color: var(--ink-mute); border-top: 1px solid var(--line); margin-top: 3rem; padding-top: 1rem; }
+</style>
+
+<main>
+  <p class="eyebrow">ChoomLink · Projektdokument · Stand 2026-07-12</p>
+  <h1>Warum wir welche Systeme bauen — und was schwierig wird</h1>
+  <p class="lede">GTA-Online-artiges Shared-World-Multiplayer für Cyberpunk 2077, als öffentlicher MIT-Fork von Cyberverse. Zielbild: 8 Spieler auf einem Server, erste Ziel-Erfahrung ist PvP-Kampf, der sich gut anfühlt.</p>
+
+  <div class="status-strip">
+    <div><span class="k">Spiel</span>v2.31 (Steam, Live-Patch)</div>
+    <div><span class="k">Fundament</span>Fork: choomlink-core</div>
+    <div><span class="k">Stage A</span>✅ verifiziert</div>
+    <div><span class="k">Bot-Harness</span>✅ 8 Bots, 560 Pakete/s</div>
+    <div><span class="k">Kapazitätsziel</span>8 Spieler</div>
+  </div>
+
+  <h2>1 · Die Ausgangslage: warum überhaupt ein Fork?</h2>
+  <p>Ein Multiplayer-Mod für ein Singleplayer-Spiel besteht aus zwei Hälften: der <em>Netzwerk-Plumbing</em> (Verbindungen, Serialisierung, Entity-Verwaltung) und der <em>Spiel-Integration</em> (fremde Spieler im eigenen Spiel sichtbar und fühlbar machen). Die Plumbing ist monatelange, undankbare Grundlagenarbeit — und sie existiert bereits dreimal:</p>
+
+  <div class="table-wrap"><table>
+    <tr><th>Projekt</th><th>Status</th><th>Für uns nutzbar?</th></tr>
+    <tr><td><b>CyberMP</b></td><td>Aktiv, Closed Beta, ~10 Entwickler</td><td>Nein — Closed Source. Beweist aber, dass unser Zielbild (Freeroam, PvP, Racing) technisch machbar ist. Wir beobachten es als Design-Referenz von außen.</td></tr>
+    <tr><td><b>Cyberverse</b></td><td>Aktiv, MIT-Lizenz</td><td><b>Ja — unser Fundament.</b> Entity-Sync, Server-Architektur und Transport funktionieren bereits. Die offenen Issues (Locomotion, Waffen, Schaden) sind exakt unsere Roadmap.</td></tr>
+    <tr><td><b>CyberpunkMP</b></td><td>Schlafend seit Ende 2024</td><td>Nein — die Custom-Lizenz verbietet ausdrücklich, den Code für ein konkurrierendes Multiplayer-Produkt auch nur zu <em>studieren</em>. Wir lesen den Kern-Quellcode nicht. Punkt.</td></tr>
+  </table></div>
+
+  <p>Die Entscheidung für den Cyberverse-Fork ist also keine Bequemlichkeit, sondern Arithmetik: Wir überspringen die Plumbing-Monate und investieren unsere (Solo-Dev-)Zeit dort, wo noch niemand fertige Antworten hat — in der Spiel-Integration. Gleichzeitig bleiben wir upstream-freundlich: generische Fixes fließen als Pull Requests zurück, was uns kostenloses Review und Goodwill der einzigen anderen offenen Community einbringt.</p>
+
+  <h2>2 · Die Systeme im Einzelnen</h2>
+  <p>Cyberverse — und damit ChoomLink — ist bewusst in vier Prozess-/Schichtgrenzen zerlegt. Jede Grenze existiert aus einem konkreten Grund.</p>
+
+  <div class="sys">
+    <div class="sys-head"><h3>Server.Native — das Netzwerk-Fundament</h3><span class="state ok">baut & läuft</span></div>
+    <p class="path">server/Native · C++ · GameNetworkingSockets · UDP 1337</p>
+    <p>Eine schlanke C++-DLL, die ausschließlich die unterste Netzwerkebene beherrscht: Valves GameNetworkingSockets (dieselbe Bibliothek, auf der CS2 und Dota laufen) für zuverlässige UDP-Kanäle, plus die binäre Serialisierung der Pakete (zpp_bits).</p>
+    <div class="why"><b>Warum eigenes System</b>Spiele-Netzwerk braucht UDP mit eigener Zuverlässigkeitsschicht — das können nur native Bibliotheken wirklich gut. Gleichzeitig will niemand Spiellogik in C++ schreiben, wenn es nicht sein muss. Die Trennung hält das gefährliche, absturzfähige Low-Level-Zeug in einer kleinen, selten angefassten DLL.</div>
+  </div>
+
+  <div class="sys">
+    <div class="sys-head"><h3>Server.Managed — das Gehirn des Servers</h3><span class="state ok">baut & läuft</span></div>
+    <p class="path">server/Managed · C# (.NET 9) · Plugin-erweiterbar</p>
+    <p>Die eigentliche Spiellogik: Wer ist verbunden, wo sind die Spieler, wer bekommt welche Broadcasts. Spricht über P/Invoke mit der nativen DLL. Hier landet künftig alles Interessante: Schadensvalidierung, Respawn-Regeln, später Spielmodi.</p>
+    <div class="why"><b>Warum eigenes System</b>C# iteriert um Größenordnungen schneller als C++ — und Serverlogik ist genau der Code, den wir am häufigsten ändern werden. Die Plugin-Architektur bedeutet außerdem: Spielmodi (Deathmatch, Racing) können später als Plugins entstehen, ohne den Kern anzufassen.</div>
+  </div>
+
+  <div class="sys">
+    <div class="sys-head"><h3>Client.RED4extModule — der Brückenkopf im Spiel</h3><span class="state ok">baut & lädt in v2.31</span></div>
+    <p class="path">client/red4ext · C++ · läuft im Spielprozess</p>
+    <p>Eine DLL, die RED4ext in den laufenden Spielprozess lädt. Sie hält die Verbindung zum Server, übersetzt Netzwerkpakete in Spiel-Operationen (Entity spawnen, teleportieren, zerstören) und schickt umgekehrt die eigene Spielerposition raus. Muss im Spielprozess leben, weil nur dort Zugriff auf Engine-Interna besteht.</p>
+    <div class="why"><b>Warum eigenes System</b>Es gibt keinen offiziellen Weg, von außen in Cyberpunk hineinzugreifen — RED4ext ist der Community-Standard dafür. Die C++-Schicht ist bewusst dünn: Netzwerk rein/raus plus die wenigen Engine-Calls, die Scripting nicht kann. Alles andere wandert eine Ebene höher.</div>
+  </div>
+
+  <div class="sys">
+    <div class="sys-head"><h3>Client.Redscript — die Spiellogik-Schicht</h3><span class="state ok">deployed</span></div>
+    <p class="path">client/RedscriptModule · redscript · kompiliert beim Spielstart</p>
+    <p>Skripte in der Spiel-eigenen Skriptsprache: Sie hören auf Spielereignisse (Waffe gezogen, geschossen, eingestiegen) und wenden Serverbefehle im Spiel an. Künftig auch: Server-Browser-UI, Chat, Statusanzeigen.</p>
+    <div class="why"><b>Warum eigenes System</b>Redscript hat natürlichen Zugriff auf das gesamte Gameplay-Objektmodell (Spieler, Waffen, HUD) und übersteht Spiel-Patches deutlich besser als binäre Hooks. Faustregel des Projekts: so viel wie möglich in redscript, C++ nur wo nötig.</div>
+  </div>
+
+  <div class="sys">
+    <div class="sys-head"><h3>Shared Protocol — der gemeinsame Vertrag</h3><span class="state ok">in Benutzung</span></div>
+    <p class="path">shared/protocol · C++-Header · von Client, Server und Bots eingebunden</p>
+    <p>Die Definition jedes Pakets (Auth, JoinWorld, PositionUpdate, Shoot …) als schlichte Structs, aus denen die Serialisierung automatisch folgt. Eine Quelle der Wahrheit für alle Seiten.</p>
+    <div class="why"><b>Warum eigenes System</b>Sync-Bugs sind die teuerste Fehlerklasse im Multiplayer. Wenn Client, Server und Test-Bots dieselben Header kompilieren, kann das Wire-Format per Konstruktion nicht auseinanderlaufen.</div>
+  </div>
+
+  <div class="sys">
+    <div class="sys-head"><h3>Bot-Harness — der Solo-Dev-Multiplikator</h3><span class="state ok">verifiziert: 8 Bots</span></div>
+    <p class="path">tools/bot-harness · C++ · nutzt exakt die echten Protokoll-Header</p>
+    <p>Ein Konsolenprogramm, das N falsche Spieler simuliert: verbinden, einloggen, in die Welt joinen, Bewegungsmuster laufen. Heute schon nachgewiesen: 8 Bots, jeder empfängt die Positions-Broadcasts aller anderen — 560 Pakete/s, verlustfrei.</p>
+    <div class="why"><b>Warum eigenes System</b>Ein Entwickler kann nicht acht Spielclients gleichzeitig bedienen — und Freunde mit Spielkopie sind eine knappe, kostbare Testressource. Der Harness macht aus „ich bräuchte mal 7 Mitspieler“ einen Kommandozeilenbefehl. Jedes künftige Sync-Feature (Bewegung, Schießen, Schaden) bekommt hier zuerst seinen Testtreiber.</div>
+  </div>
+
+  <div class="sys">
+    <div class="sys-head"><h3>Werkzeug-Unterbau — Frameworks & Disziplin</h3><span class="state ok">alles verifiziert</span></div>
+    <p class="path">RED4ext 1.30 · redscript 0.5.31 · Codeware 1.20 · CET 1.37 · beans · docs/</p>
+    <p>Die Community-Frameworks im Spiel (alle auf v2.31 in-game verifiziert), Issue-Tracking mit beans entlang der Combat-Kette, und Dokumentations-Disziplin: Umgebungszustand, Entscheidungen und verifizierte Fakten werden festgehalten, bevor sie vergessen werden.</p>
+    <div class="why"><b>Warum das zählt</b>Lehre aus dem Vorgängerprojekt: Community-Behauptungen empirisch prüfen, bevor man auf ihnen baut — und jede geprüfte Erkenntnis aufschreiben. Der Fork lebt von einer Kette externer Abhängigkeiten; ohne Versionsbuchhaltung wird jedes Spiel-Update zum Blindflug.</div>
+  </div>
+
+  <h2>3 · Die Roadmap ist eine Abhängigkeitskette</h2>
+  <p>„PvP-Kampf, der sich gut anfühlt“ ist kein einzelnes Feature, sondern das oberste Glied einer Kette — jedes Glied setzt das vorige voraus. Genau deshalb ist die Reihenfolge nicht verhandelbar:</p>
+
+  <ol class="chain">
+    <li><b>Locomotion-Sync</b> — du musst den anderen Spieler <em>sehen</em> (laufen, sprinten, springen), bevor du gegen ihn kämpfen kannst. Heute existiert nur Teleport + Interpolation; echte Bewegung ist das nächste Milestone.</li>
+    <li><b>Waffen-Sync</b> — sehen, <em>was</em> er in der Hand hält und wohin er zielt. Die Equip-Pakete fließen bereits; die Darstellung am fremden Spielermodell fehlt.</li>
+    <li><b>Schaden/Health-Sync</b> — Treffer müssen auf beiden Bildschirmen zählen und beide Lebensbalken müssen sich einig sein. Hier entscheidet sich, ob PvP fair wirkt.</li>
+    <li><b>Combat-Polish</b> — Trefferfeedback, Tod/Respawn, Latenzkompensation. Der Unterschied zwischen „funktioniert“ und „fühlt sich gut an“.</li>
+  </ol>
+  <p>Danach: Erscheinungsbild-Sync (fremde Spieler sehen aus wie ihre V), Fahrzeuge, Aktivitäten. Bewusst <em>nicht</em> auf der Roadmap: Story-Koop — die Questwelt zu synchronisieren ist ein Vielfaches schwerer als Freeroam und ein anderes Projekt.</p>
+
+  <h2>4 · Was schwierig wird — das Risikoregister</h2>
+  <p>Ehrliche Bestandsaufnahme, sortiert nach erwarteter Schmerzintensität. Jedes Risiko mit dem Plan dagegen.</p>
+
+  <h3 style="color:var(--ink-mute)">Technisch</h3>
+
+  <div class="risk high">
+    <h3><span class="sev">HOCH</span>Glaubwürdige Bewegung fremder Spieler</h3>
+    <p>Das Kernproblem des gesamten Genres. Der Server kennt nur Positionen im 100-ms-Takt; das Spiel erwartet aber Animationen, Beschleunigung, Sprünge, Slides. Heute werden fremde Spieler als NPC-Puppets teleportiert und interpoliert — das sieht nach Schlittschuhlaufen aus, nicht nach Laufen. Die Engine-Animationssteuerung von außen zu treiben ist kaum dokumentiertes Terrain.</p>
+    <p class="mitigation"><b>Plan</b> — Schrittweise: erst saubere Interpolation (Bots als Messinstrument!), dann Animations-Events (Jump, Sprint) als eigene Pakete, dann Blending. Erkenntnisse der Community (CET/Codeware-Ökosystem) systematisch prüfen statt neu erfinden.</p>
+  </div>
+
+  <div class="risk high">
+    <h3><span class="sev">HOCH</span>Schadens-Autorität: Wem glauben wir?</h3>
+    <p>Cyberpunks Schadensberechnung ist tief in Perks, Cyberware und Item-Stats verwoben — sie läuft auf dem Client des Schützen. Naive Übernahme („Client sagt: 500 Schaden“) macht Cheating trivial und fühlt sich bei Latenz unfair an. Volle Server-Autorität hieße dagegen, das halbe RPG-System auf dem Server nachzubauen.</p>
+    <p class="mitigation"><b>Plan</b> — Pragmatischer Mittelweg für 8 Spieler unter Freunden: Client meldet Treffer, Server validiert Plausibilität (Distanz, Rate, Sichtlinie grob) und ist autoritativ für Health. Anti-Cheat ist explizit <em>kein</em> Ziel von v1 — das Bedrohungsmodell sind Freunde, nicht Fremde.</p>
+  </div>
+
+  <div class="risk high">
+    <h3><span class="sev">HOCH</span>Spiel-Patches brechen den Unterbau</h3>
+    <p>Jeder CDPR-Patch verschiebt Speicheradressen und kann RED4ext, Codeware, CET und damit uns brechen — für Tage bis Wochen, bis die Community nachzieht. Wir haben entschieden, immer auf dem Live-Patch zu bleiben (Steam erzwingt das faktisch), also trifft uns jeder Patch sofort.</p>
+    <p class="mitigation"><b>Plan</b> — So viel Logik wie möglich in redscript (patch-robust) statt binären Hooks; Adress-Abhängigkeiten minimal halten; ENVIRONMENT.md dokumentiert jederzeit den letzten funktionierenden Stand. Positive Datenlage: v2.31 lief mit 921.876 aufgelösten Community-Adressen auf Anhieb.</p>
+  </div>
+
+  <div class="risk high">
+    <h3><span class="sev">HOCH</span>Jeder Client lebt in seiner eigenen Welt</h3>
+    <p>Wir synchronisieren Spieler — aber nicht die Welt. NPCs, Verkehr, Tageszeit, Quest-Zustände und Polizei-Eskalation laufen auf jedem Client unabhängig. Zwei Spieler am selben Ort sehen verschiedene Passanten. Für Freeroam-PvP verkraftbar, aber es begrenzt, welche gemeinsamen Erlebnisse überhaupt möglich sind, und produziert Verwirrung („welcher Gegner?!“).</p>
+    <p class="mitigation"><b>Plan</b> — Bewusste Scope-Entscheidung: Welt-Sync bleibt aus v1 draußen. PvP-Design so wählen, dass es NPC-arm funktioniert (Duelle, Deathmatch-Zonen). Erwartungsmanagement in jeder Beschreibung des Projekts.</p>
+  </div>
+
+  <div class="risk mid">
+    <h3><span class="sev">MITTEL</span>Netcode-Gefühl bei echter Latenz</h3>
+    <p>Localhost lügt: 0 ms Latenz, 0 % Loss. Über Internet (Tailscale, 20–80 ms) entscheiden Interpolationspuffer, Extrapolation und Trefferregistrierung darüber, ob PvP sich „laggy“ anfühlt. Das ist Feintuning-Arbeit, die erst ganz am Ende der Kette sichtbar wird.</p>
+    <p class="mitigation"><b>Plan</b> — Bot-Harness bekommt in einer späteren Ausbaustufe künstliche Latenz/Jitter (GNS bringt Simulationsparameter mit). So testen wir Netcode-Gefühl reproduzierbar, bevor der erste Freund es erlebt.</p>
+  </div>
+
+  <div class="risk mid">
+    <h3><span class="sev">MITTEL</span>Protokoll-Evolution ist Handarbeit an drei Orten</h3>
+    <p>Ein neues Paket erfordert heute: Struct im Shared-Header, Switch-Case im nativen Server, Enum+Struct+Handler im C#-Server, Handler im Client — und jetzt auch im Bot. Vergisst man eine Stelle, gibt es stille Deserialisierungsfehler.</p>
+    <p class="mitigation"><b>Plan</b> — Kurzfristig Checkliste im Repo („neues Paket = 5 Orte“). Mittelfristig Codegenerierung aus den Headern prüfen — wäre auch ein wertvoller Upstream-Beitrag.</p>
+  </div>
+
+  <div class="risk mid">
+    <h3><span class="sev">MITTEL</span>Abhängigkeit von einem kleinen Upstream</h3>
+    <p>Cyberverse trägt im Kern die Handschrift eines einzelnen Maintainers. Schläft das Projekt ein, erben wir die gesamte Plumbing-Wartung; driftet es stark, werden Merges teuer.</p>
+    <p class="mitigation"><b>Plan</b> — Upstream-freundlich arbeiten (PRs, Issues), aber so bauen, als müssten wir notfalls allein weiter: eigene Doku über jede Kernkomponente, keine Kern-Änderung ohne Verständnis. MIT-Lizenz garantiert, dass uns niemand den Boden wegziehen kann.</p>
+  </div>
+
+  <div class="risk mid">
+    <h3><span class="sev">MITTEL</span>Fehlende Basisfunktionen: Auth, Server-Browser, Persistenz</h3>
+    <p>Aktuell verbindet der Client sich per Kommandozeilen-Argument, jeder Username wird akzeptiert, nichts überlebt einen Server-Neustart. Für Tests okay; für „Freunde joinen regelmäßig“ braucht es mindestens eine In-Game-Verbindungs-UI und ein Minimal-Auth.</p>
+    <p class="mitigation"><b>Plan</b> — Bewusst hinter die Combat-Kette priorisiert: erst wenn es etwas zu spielen gibt, lohnt Komfort. Der Freund-Onboarding-Guide überbrückt bis dahin mit Copy-Paste-Anleitungen.</p>
+  </div>
+
+  <div class="risk low">
+    <h3><span class="sev">NIEDRIG</span>Performance bei 8 Spielern</h3>
+    <p>8 Verbindungen × 10 Hz Positionsupdates sind für GameNetworkingSockets Rundungsrauschen — der Bot-Test bestätigt es (560 Broadcasts/s ohne Verlust). Der echte Engpass wird clientseitig liegen: 7 zusätzliche animierte Puppets kosten Frames.</p>
+    <p class="mitigation"><b>Plan</b> — 8-Spieler-Lasttest (1 echter Client + 7 Bots) ist als Bean eingeplant, sobald Locomotion-Sync steht — dann messen statt raten.</p>
+  </div>
+
+  <h3 style="color:var(--ink-mute)">Organisatorisch & rechtlich</h3>
+
+  <div class="risk mid">
+    <h3><span class="sev">MITTEL</span>CDPR-Duldung ist Wohlwollen, kein Recht</h3>
+    <p>Modding ist von CDPR ausdrücklich erwünscht, Multiplayer-Mods wurden historisch geduldet (CyberMP läuft offen). Aber: Die REDmod-EULA erwähnt Multiplayer nicht, und CDPR behält Takedown-Hebel. Strikt nicht-kommerziell zu bleiben ist Bedingung, nicht Option — schon ein Patreon wäre riskant.</p>
+    <p class="mitigation"><b>Plan</b> — Kein Geld, keine Asset-Redistribution, Disclaimer überall, legale Spielkopie vorausgesetzt. Der Interoperabilitäts-Rahmen (eigene Kopien, eigener Server) ist die stärkste Position, die ein Mod haben kann.</p>
+  </div>
+
+  <div class="risk mid">
+    <h3><span class="sev">MITTEL</span>Solo-Dev: Der Engpass bist du</h3>
+    <p>Ein Entwickler, ein Hobby-Zeitbudget, eine Kette von Milestones, von denen jedes Wochen dauern kann. Das größte Projektrisiko ist schlicht Erschöpfung oder Verzettelung.</p>
+    <p class="mitigation"><b>Plan</b> — Genau dafür existiert die ganze Infrastruktur dieser Session: Bot-Harness statt Testspieler-Koordination, beans-Backlog gegen Verzettelung, Doku gegen Kontextverlust zwischen Sessions, kleine verifizierbare Milestones („Meldung auf dem Bildschirm“) für sichtbaren Fortschritt.</p>
+  </div>
+
+  <div class="risk low">
+    <h3><span class="sev">NIEDRIG</span>CyberpunkMP-Kontamination</h3>
+    <p>Ein unbedachter Blick in deren Kern-Code (z. B. via Suchmaschinen-Treffer oder KI-Trainingswissen) könnte uns lizenzrechtlich angreifbar machen.</p>
+    <p class="mitigation"><b>Plan</b> — Harte Regel in CLAUDE.md beider Repos: Kern-Quellcode wird nicht gelesen, nur die drei MIT-lizenzierten Verzeichnisse wären theoretisch zulässig. Im Zweifel: gar nichts davon.</p>
+  </div>
+
+  <h2>5 · Warum das trotzdem eine gute Wette ist</h2>
+  <ul>
+    <li><b>Die riskanteste Annahme ist bereits getestet.</b> „Läuft Cyberverse überhaupt auf dem aktuellen Patch?“ war das größte Unbekannte des Plans — beantwortet mit Ja, am ersten Tag, ohne eine Zeile Porting.</li>
+    <li><b>Jedes Folgemilestone hat schon seinen Testtreiber.</b> Der Bot-Harness stand absichtlich <em>vor</em> dem ersten Sync-Feature — ab jetzt wird jede Zeile Sync-Code gegen 8 simulierte Spieler entwickelt, nicht gegen die Hoffnung auf Feizeit von Freunden.</li>
+    <li><b>Der Fork-Ansatz begrenzt den Einsatz.</b> Selbst im schlechtesten Fall (Projekt stirbt) fließt alles Generische als PRs zurück in ein offenes Ökosystem — nichts davon ist verlorene Arbeit.</li>
+    <li><b>Die Kette liefert früh Spielbares.</b> Schon nach Milestone 1 (Locomotion) gibt es einen echten „Wow“-Moment: einen Freund durch Night City laufen sehen. Alles danach ist Verfeinerung eines bereits erlebbaren Kerns.</li>
+  </ul>
+
+  <p class="footnote">ChoomLink · unabhängiges, nicht-kommerzielles Interoperabilitäts-/Modding-Projekt · nicht mit CD PROJEKT S.A. affiliiert · Fork von TDUniverse/Cyberverse (MIT) · Quellen: START_HERE.md, RESEARCH.md, docs/ENVIRONMENT.md, Session-1-Verifikationen vom 2026-07-12</p>
+</main>
