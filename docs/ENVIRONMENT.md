@@ -30,6 +30,12 @@
 
 - **Smart App Control:** disabled 2026-07-12 (registry `VerifiedAndReputablePolicyState=0`, user-approved) because it blocked locally-compiled unsigned binaries (vcpkg's protoc.exe). Took effect without reboot despite docs claiming otherwise.
 
+## Stage A verified (2026-07-12)
+
+- **Cyberverse works on game v2.31 unmodified** — no porting needed despite the README's v2.1 claim. Verified end-to-end on localhost: server (`dotnet run` in `server\Managed`, **needs `DOTNET_ROLL_FORWARD=LatestMajor`** since it targets net9.0 and only runtimes 8/10 are installed; UDP port 1337 hardcoded) ← client connected, player spawned/joined world, weapon-equip packets flowed.
+- Server needs the native DLLs (`Cyberverse.Server.Native.dll` + GNS/protobuf/abseil/crypto) copied next to the managed output — no csproj copy step upstream.
+- Client deploy: `red4ext\plugins\Cyberverse\` (plugin DLL + 4 deps) + `client\RedscriptModule\src\*` → `r6\scripts\Cyberverse\`. Connection ONLY via game launch args: `--cyberverse-server-address=127.0.0.1 --cyberverse-server-port=1337` (no in-game UI yet).
+
 ## Upstream snapshot (2026-07-12)
 
 - TDUniverse/Cyberverse: last push 2026-07-06, 16 open issues, default branch `master`.
