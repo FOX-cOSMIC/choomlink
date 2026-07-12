@@ -25,13 +25,13 @@ Why this shape:
 
 **Still recommended as step zero:** one trivial standalone redscript mod (hours, not days, given prior macOS redscript experience) purely to validate the Windows toolchain before touching the fork.
 
-## 3. Multiplayer landscape (researched 2026-07-11)
+## 3. Multiplayer landscape (researched 2026-07-11; **re-verified 2026-07-12 — see [RESEARCH.md](RESEARCH.md)**, which adversarially verified 25/25 claims and adds licensing + CDPR-legal detail)
 
 | Project | Status | Notes |
 |---|---|---|
 | **CyberMP** (cyber.mp) | Active, **closed source**, closed beta | ~10 devs, GTA-Online-style shared world (PvP/racing), explicitly NOT campaign co-op. Access via their Discord (discord.com/invite/cybermp) tester waves only. Watch it; can't build on it. |
 | **TDUniverse/Cyberverse** | **Active + MIT open source** (pushed 2026-07-06) | The one to build on. 4-part architecture: `Server.Native` (C++ networking, GameNetworkingSockets), `Server.Managed` (C# game logic, plugin-extensible), `Client.RED4extModule` (C++), `Client.Redscript`. Client deps: RED4ext + redscript + Codeware. Has working sandbox + entity sync. **Not playable for regular users yet** — core sync features are open issues from Dec 2023: locomotion #6, damage/health #5, weapons #4, vehicle mount #3, server browser #7, auth #9. Targets game **v2.1** (version pinning is a real risk — check current compatibility first). Docker server image reportedly broken (#14, #22). |
-| tiltedphoques/CyberpunkMP | **Dead** (last push Dec 2024) | SkyrimTogether team's attempt. Reference only. |
+| tiltedphoques/CyberpunkMP | **Dormant** (last push Dec 2024; repo not archived) | SkyrimTogether team's attempt. ⛔ **NOT reference material:** its custom license forbids *studying or analyzing* the code to build a competing multiplayer product — which ChoomLink is. Do not read its core source. Only its 3 MIT-licensed dirs are safe; details in [RESEARCH.md](RESEARCH.md). |
 | CyberScript | Dead, pulled from Nexus | Ignore. |
 
 ## 4. Working with Claude Code — yes, in the terminal
@@ -101,7 +101,7 @@ Realistic staged setup:
    - then combat polish: hit feedback, death/respawn, netcode feel (latency compensation).
    Appearance sync (#10/#12) and vehicles (#3) come after combat works. Re-read the upstream issues fresh in session 1 — this snapshot is from 2026-07-11.
 9. **Game version: the NEWEST live patch (decided).** Do NOT downgrade the Steam install. Consequence: since upstream Cyberverse targets v2.1, an early work item is likely **porting the fork to the current patch** (RED4ext/red-lib/Codeware version bumps, possibly changed offsets). Check upstream master's actual compatibility first — the June-2026 dependency-bump commits suggest they may already track newer versions than the README says. If it truly only runs on 2.1, porting to current IS the first technical milestone (and a great upstream PR).
-10. **EULA awareness:** same posture as the Mac project — interoperability modding of owned copies, no asset redistribution, standard disclaimer in the README. (Not really open, just: keep it.)
+10. **EULA awareness:** same posture as the Mac project — interoperability modding of owned copies, no asset redistribution, standard disclaimer in the README. (Not really open, just: keep it.) The 2026-07-12 research added CDPR-document specifics (REDmod EULA never mentions multiplayer; modders keep mod ownership; takedown levers; strictly non-commercial — careful with Patreon-style funding): see the "CDPR legal position" section of [RESEARCH.md](RESEARCH.md).
 
 ## 8. First-session script (suggested)
 

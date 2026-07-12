@@ -6,6 +6,8 @@
 
 👉 **Start here: [START_HERE.md](START_HERE.md)** — the bootstrap document for the first development session (context, decisions, toolchain checklist, roadmap).
 
+📋 **[RESEARCH.md](RESEARCH.md)** — verified landscape research (2026-07-12): project statuses, licensing (incl. why CyberpunkMP's source must not be read), CDPR legal position.
+
 ## Decided (2026-07-12)
 
 - **Goal:** GTA-Online-style freeroam; first target experience is **PvP combat that works well** (locomotion → weapon → damage/health sync).
