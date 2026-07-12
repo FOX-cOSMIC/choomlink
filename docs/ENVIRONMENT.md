@@ -19,12 +19,16 @@
 
 ## Game
 
-- **Cyberpunk 2077 (Steam)**, install path: `C:\Program Files (x86)\Steam\steamapps\common\Cyberpunk 2077`
-- ⏳ **Still downloading** as of session 1 (72.6 / 86.6 GB, Steam target buildid **20383525**). Exact game version: record from `Cyberpunk2077.exe` ProductVersion once download completes.
-- Mod frameworks: **not installed yet** (blocked on game download), but latest releases are **staged** in `C:\Users\G4M3R\Programming\cp2077-mod-staging`:
+- **Cyberpunk 2077 (Steam) v2.31** (exe FileVersion 3.0.5294808, Steam buildid 20383525), install path: `C:\Program Files (x86)\Steam\steamapps\common\Cyberpunk 2077`
+- Mod frameworks **installed 2026-07-12** (zips kept in `C:\Users\G4M3R\Programming\cp2077-mod-staging`):
   - RED4ext 1.30.0 · redscript 0.5.31 · Codeware 1.20.3 · CET 1.37.1 · ArchiveXL 1.26.8 · TweakXL 1.11.3
-  - Check each supports the installed patch once the game version is known (CET is usually the most version-sensitive).
-- Warm-up redscript mod written: `choomlink-core\sandbox\warmup\ChoomLinkWarmup.reds` — deploy to `<game>\r6\scripts\ChoomLinkWarmup\` once frameworks are in.
+  - ✅ **All verified in-game on v2.31** (2026-07-12): RED4ext loaded 921876 game addresses, all plugins loaded, redscript compiled clean, CET overlay works.
+- Warm-up redscript mod deployed to `<game>\r6\scripts\ChoomLinkWarmup\ChoomLinkWarmup.reds` (source: `choomlink-core\sandbox\warmup\`) — ✅ **verified in-game**: on-screen "ChoomLink warm-up OK" message fired after spawn. Note: FTLog output does not appear in file logs, only in CET's Game Log window.
+- All four Cyberverse components build on this machine: Server.Managed (dotnet), Server.Native + Client.RED4extModule (Ninja/vcpkg/MSVC — see `choomlink-core\CLAUDE.md`).
+
+## Windows security note
+
+- **Smart App Control:** disabled 2026-07-12 (registry `VerifiedAndReputablePolicyState=0`, user-approved) because it blocked locally-compiled unsigned binaries (vcpkg's protoc.exe). Took effect without reboot despite docs claiming otherwise.
 
 ## Upstream snapshot (2026-07-12)
 
