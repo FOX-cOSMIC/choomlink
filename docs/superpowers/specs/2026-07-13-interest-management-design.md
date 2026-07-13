@@ -181,6 +181,30 @@ bekommt. Die 6-Stellen-Packet-Checkliste wird nicht berührt.
 - Kein Versions-Check beim Join (separates, kleines Arbeitspaket aus der
   Versionspinning-Entscheidung).
 
+## Verifikations-Ergebnisse (2026-07-13, nach Implementierung)
+
+- **Unit-Tests:** 24/24 grün (Config 4, SpatialGrid 8, EntityTracker 12 —
+  inkl. beider Despawn-Korrektheits-Richtungen und Hysterese-Oszillation).
+- **Fern-Isolation (headless):** 2 Gruppen à 4 Bots, 1414m getrennt — exakt
+  120 Teleports/s je Gruppe (nur eigene 3 Peers × 10 Hz), 12 Spawns je
+  Gruppe, 0 Despawns, kein Cross-Traffic.
+- **Boundary-Hysterese (headless):** Bot pendelt 417,5–462,5m um Beobachter,
+  130 s: exakt 1 Spawn, 0 Despawns, Position fließt mit 10/s. Gegenprobe
+  Pendel um 500m: 0 Spawns über 45 s.
+- **Action-Isolation (in-game-Session):** Nahgruppe empfing 0 Actions,
+  während die Ferngruppe (600m) untereinander 92 Jump-Actions austauschte.
+- **50-Bot-Dichte:** Netzwerk-Schicht verlustfrei (24.500 Teleports/s
+  empfangen = exakt 50×49×10 Hz; Server ~0 CPU, 112 MB). In-Game bestätigt
+  der Test die vermutete Grenze der **Darstellungs-Schicht**: Puppets
+  hängen hinter ihren Proxies (Engine-KI-Budget auf 50 aktive
+  AIFollowTargetCommands verteilt), der 8m-Catch-up-Teleport feuert laufend
+  — sichtbar als "rennen in eine Richtung, teleportieren in eine andere"
+  (Beobachtung des Auftraggebers). Bei 4–8 Bots flüssig (mehrfach
+  verifiziert). **Folgerung: Dichte-Limit der heutigen Proxy-Follow-
+  Darstellung liegt zwischen 8 und 50 gleichzeitig sichtbaren Puppets;
+  Bisektion (16/24/32) steht aus. Nachhaltiger Fix ist das Phase-4b-
+  Remote-Player-Modell (bean mg7p), kein Tuning der 8m-Konstante.**
+
 ## Upstream-Verhältnis
 
 Alle Änderungen liegen in Server.Managed + Bot-Harness — upstream-PR-fähig
