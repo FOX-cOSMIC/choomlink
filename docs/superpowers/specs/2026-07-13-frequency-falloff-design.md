@@ -102,6 +102,22 @@ ab (`1e9`-Sentinel statt Sonderfall-Logik).
    ein Bot bei ~300 m bewegt sich noch glaubwürdig für die Distanz —
    Screenshot-Burst + mein Urteil, Feinheit beim Auftraggeber.
 
+## Verifikations-Ergebnisse (2026-07-13, nach Implementierung)
+
+- **Unit-Tests:** 32/32 grün (4 Config-Tiers, 4 Falloff-Raten inkl.
+  Mixed-Observer; Hysterese-Test an das Fern-Tier angepasst).
+- **Bot-Messung:** Beobachter empfängt vom 300m-Bot exakt **2 Teleports/s**
+  (vorher 10) — symmetrisch in beide Richtungen. Nah-Regression: 4 Bots im
+  5–8m-Kreis unverändert 108–120 Teleports/s gesamt (voller 10-Hz-Takt).
+- **In-Game:** Nahbots optisch unverändert (Screenshot-Burst); 300m-Bot
+  außer Sichtweite, 2-Hz-Takt über Zähler bewiesen.
+- **Nebenbefund (nicht durch Falloff verursacht, Zähler beweisen
+  unveränderte 10-Hz-Lieferung):** Die seit der Proxy-Follow-Phase bekannte
+  Stop-Totzone von `AIFollowTargetCommand` (desiredDistance 0,5 + tolerance
+  1,0) lässt langsame Bots auf engen Kreisen periodisch stehen/sprinten.
+  **Entscheidung des Auftraggebers: kein Tuning — das Phase-4b-Spielermodell
+  (bean mg7p) ersetzt die Follow-Mechanik für Spieler-Puppets ohnehin.**
+
 ## Upstream-Verhältnis
 
 Wie Phase 1: reine Server.Managed-Änderung, upstream-PR-fähig als Teil des

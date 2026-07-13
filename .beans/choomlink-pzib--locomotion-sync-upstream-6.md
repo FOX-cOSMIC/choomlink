@@ -1,11 +1,11 @@
 ---
 # choomlink-pzib
 title: 'Locomotion sync (upstream #6)'
-status: todo
+status: completed
 type: milestone
 priority: high
 created_at: 2026-07-12T07:02:15Z
-updated_at: 2026-07-12T07:02:15Z
+updated_at: 2026-07-13T18:42:14Z
 blocked_by:
     - choomlink-kr7z
 ---
