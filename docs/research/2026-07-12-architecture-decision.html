@@ -345,6 +345,17 @@
       <p class="shippable">Shippable: PvP-Grundlage (bean 2hum/y9rd).</p>
     </div>
     <div class="phase">
+      <span class="phase-label">Phase 4b — Research-first</span>
+      <h3>Remote-Player-Modell: eigenes Spieler-Puppet für PvP-Darstellung</h3>
+      <p><strong>Entscheidung 2026-07-13:</strong> Proxy-Follow trägt Boden-Fortbewegung, aber keine PvP-taugliche <em>Darstellung</em> — kein Strafing, keine Zielhaltung, keine sichtbare Waffe. Rust/GTA-Plattformen treiben das Animations-System des Remote-Spielers direkt aus Netzwerkdaten; Cyberpunk hat als Singleplayer-Engine diese API nicht. Deshalb: <strong>eigenes Spieler-Puppet</strong> ("fast ein eigener Mod"), weil gute PvP-Erfahrung es verlangt.</p>
+      <ul>
+        <li><strong>Deep-Research-Spike zuerst:</strong> AnimFeatures/direkte Animationsgraph-Fütterung, Custom-.ent/Rig (WolvenKit), Waffe-in-Hand via TransactionSystem (Gangs machen es nativ vor), Zielhaltung via AI-Aim-Kommandos.</li>
+        <li><strong>Entwicklung phasenweise:</strong> sichtbare Waffe → Zielhaltung → Bewegungs-Fidelity (Strafing/Stances).</li>
+      </ul>
+      <p>Proxy-Follow bleibt für NPCs (Phase 5); für Spieler-Puppets darf es ersetzt werden — gedeckt durch die Projektregel "willing to throw away built work".</p>
+      <p class="shippable">Shippable pro Stufe: sichtbare Waffen allein sind schon ein spürbarer PvP-Gewinn (bean mg7p).</p>
+    </div>
+    <div class="phase">
       <span class="phase-label">Phase 5 — NPC-Sync</span>
       <h3>Entity-Ownership &amp; Handover für kuratierte Gameplay-NPCs</h3>
       <p><strong>Zwei NPC-Klassen, strikt getrennt (FiveM-Vorbild):</strong> ambiente NPCs (Verkehr, Passanten) bleiben komplett client-lokal und unsynchronisiert. Gameplay-relevante NPCs (Encounter-Gegner, Bosse, Händler) werden mit demselben Bauplan wie Remote-Spieler synchronisiert:</p>

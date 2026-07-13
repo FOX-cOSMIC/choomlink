@@ -164,6 +164,29 @@ Sicherheitsgewinn zuerst. *Shippable: erste dauerhafte Spieler-Identität
 Winkel/Cooldown gegen zuletzt bekannte Positionen, committet HP-Änderung
 selbst. *Shippable: PvP-Grundlage, bean 2hum/y9rd.*
 
+**Phase 4b — Remote-Player-Modell: eigenes Spieler-Puppet für PvP-Darstellung
+(Research-first, bean mg7p).** Entscheidung 2026-07-13: Die Proxy-Follow-
+Locomotion (AIFollowTargetCommand) trägt Boden-Fortbewegung, aber keine
+PvP-taugliche *Darstellung* — kein Strafing, keine Zielhaltung, keine
+sichtbare Waffe. Rust und die GTA-Plattformen treiben das Animations-System
+des Remote-Spielers direkt aus Netzwerkdaten (Rust: Animator-Parameter aus
+State-Flags; MTA/FiveM: native Ped-Task-/Waffen-APIs, teils Input-Sync).
+Cyberpunk als Singleplayer-Engine hat diese API nicht — deshalb bauen wir
+ein **eigenes Spieler-Puppet** ("fast ein eigener Mod"), weil gute
+PvP-Erfahrung es verlangt. Zweistufig:
+- **Deep-Research-Spike zuerst** (eigene Session): AnimFeatures/direkte
+  Animationsgraph-Fütterung (der Weg der Posing-Mods), Custom-.ent/Rig via
+  WolvenKit, Waffe-in-Hand über TransactionSystem/Equipment (Gangs machen es
+  nativ vor), Zielhaltung über AI-Aim-Kommandos, und die Grenze: was geht
+  ohne eigenes Rig, was braucht eins.
+- **Entwicklung phasenweise** nach Spike-Befund: sichtbare Waffe → Zielhaltung
+  → Bewegungs-Fidelity (Strafing/Stances).
+
+Proxy-Follow bleibt für NPCs (Phase 5) die richtige Mechanik; für
+Spieler-Puppets darf es ersetzt werden — explizit gedeckt durch die
+Projektregel "willing to throw away built work". *Shippable pro Stufe:
+sichtbare Waffen sind allein schon ein spürbarer PvP-Gewinn.*
+
 **Phase 5 — NPC-Sync: Entity-Ownership & Handover für kuratierte
 Gameplay-NPCs (Ziel: ~100 gleichzeitig).** Zwei NPC-Klassen werden strikt
 getrennt (FiveM-Vorbild): **ambiente NPCs** (Verkehr, Passanten) bleiben
