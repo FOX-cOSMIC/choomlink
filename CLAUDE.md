@@ -10,6 +10,7 @@ Project home/planning repo. Code lives in `..\choomlink-core` (fork of TDUnivers
 ## Working style
 
 - **No shortcuts — sustainable solutions.** When something misbehaves, don't tune magic constants or fake the effect; find the engine-native mechanism (user rule, applies to everything: "wenn wir eine gute PvP-Erfahrung wollen, können wir uns keine Shortcuts leisten").
+- **Willing to throw away already-built work for performance.** If a proven-better architecture requires discarding something already implemented and working (a packet format, a sync model, even a whole subsystem), that's an acceptable cost — a competitive PvP community server prioritizes performance/correctness over sunk cost. Don't let "we already built this" block replacing it with something that scales or performs better.
 
 - Do verification yourself where possible (see the `ingame-verify` skill): logs, packet counters, screenshot bursts you evaluate visually. Only hand the user what genuinely needs a human (animation feel, gameplay judgment) — and when their impression matters, report what you saw first, then ask what they saw.
 - Never read tiltedphoques/CyberpunkMP core source (license forbids studying it).
