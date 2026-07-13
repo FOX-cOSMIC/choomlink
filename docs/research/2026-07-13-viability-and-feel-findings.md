@@ -29,9 +29,17 @@ belastbar ist und wo eine gezielte Nachrecherche sich lohnt.
    RED4ext v1.29.0 (Sept. 2025) kam gezielt für CP2077-Patch 2.31+; zwischen
    manchen Kompatibilitäts-Releases lagen ~6 Monate (v1.27.0→v1.28.0: 175
    Tage; v1.29.1→v1.30.0: ~5,9 Monate), neben auch schnellen Same-Day-Fixes.
-   **Konsequenz für ChoomLink:** nach großen CP2077-Patches mehrmonatige
-   Verzögerung realistisch einplanen, nicht als Ausnahme behandeln.
-   *(Quelle: github.com/WopsS/RED4ext/releases — primär, hohe Konfidenz)*
+   **Projektentscheidung (2026-07-13, Auftraggeber):** ChoomLink pinnt sich
+   auf v2.31 (der heutige Start-Build) und ist NICHT verpflichtet, neuen
+   CP2077-Patches hinterherzuziehen — dieselbe Strategie, die FiveM mit
+   festen GTA-Builds fährt. Damit wird die Patch-Lag von einem wiederkehrenden
+   Überlebensrisiko zu einer bewussten, einmaligen Wahl. Verbleibende
+   Konsequenzen: (a) Tester müssen Auto-Updates verhindern bzw. den
+   gepinnten Build behalten können (GOG macht Rollback leicht, Steam braucht
+   Depot-Tricks — gehört ins Onboarding), (b) der Server sollte die
+   Client-Spielversion beim Join prüfen (gleiche Kick-bei-Mismatch-Logik wie
+   Befund 4), (c) ein späterer Versionssprung ist ein geplantes Projekt, kein
+   Zwang. *(Quelle: github.com/WopsS/RED4ext/releases — primär, hohe Konfidenz)*
 
 2. **Steam Workshops "Enable Game Branch Versions"** ist ein offizieller,
    aber für Cyberpunk 2077 nicht direkt nutzbarer Mechanismus, um Mod-
