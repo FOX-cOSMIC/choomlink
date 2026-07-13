@@ -1,0 +1,340 @@
+<title>ChoomLink — Viability & Game-Feel Findings</title>
+<style>
+  :root {
+    --bg: #0e1116; --bg-raise: #151a21; --bg-inset: #0a0d11;
+    --ink: #e8e6dd; --ink-mute: #97a0ac; --line: #262d37;
+    --accent: #53d6dd; --accent-dim: #2a6d72; --marker: #f0d264;
+    --risk-high: #e5484d; --risk-mid: #e8a33d; --risk-low: #58a86b;
+    --mono: "Cascadia Code", Consolas, "Courier New", monospace;
+    --sans: "Segoe UI", -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f2f1ea; --bg-raise: #ffffff; --bg-inset: #e9e8df;
+      --ink: #1c2025; --ink-mute: #5c6570; --line: #d8d6ca;
+      --accent: #0e7c85; --accent-dim: #9fc9cd; --marker: #a07d00;
+      --risk-high: #c73338; --risk-mid: #a86a12; --risk-low: #3c7d4e;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1116; --bg-raise: #151a21; --bg-inset: #0a0d11;
+    --ink: #e8e6dd; --ink-mute: #97a0ac; --line: #262d37;
+    --accent: #53d6dd; --accent-dim: #2a6d72; --marker: #f0d264;
+    --risk-high: #e5484d; --risk-mid: #e8a33d; --risk-low: #58a86b;
+  }
+  :root[data-theme="light"] {
+    --bg: #f2f1ea; --bg-raise: #ffffff; --bg-inset: #e9e8df;
+    --ink: #1c2025; --ink-mute: #5c6570; --line: #d8d6ca;
+    --accent: #0e7c85; --accent-dim: #9fc9cd; --marker: #a07d00;
+    --risk-high: #c73338; --risk-mid: #a86a12; --risk-low: #3c7d4e;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--ink); font-family: var(--sans);
+    line-height: 1.65; margin: 0; padding: 0 1.25rem;
+  }
+  main { max-width: 50rem; margin: 0 auto; padding: 3rem 0 6rem; }
+
+  h1, h2, h3 { font-family: var(--mono); text-wrap: balance; line-height: 1.25; }
+  h1 { font-size: 1.9rem; margin: 0.4rem 0 0.6rem; letter-spacing: -0.02em; }
+  h2 {
+    font-size: 1.3rem; margin: 3.4rem 0 1.1rem; padding-top: 1.6rem;
+    border-top: 1px solid var(--line); color: var(--accent);
+    display: flex; align-items: baseline; gap: 0.6rem;
+  }
+  h2 .num { font-size: 0.85rem; color: var(--marker); letter-spacing: 0.1em; }
+  h3 { font-size: 1.02rem; margin: 1.8rem 0 0.5rem; color: var(--ink); }
+  p { margin: 0.7rem 0; }
+  a { color: var(--accent); }
+  strong { color: var(--ink); }
+  ul, ol { padding-left: 1.3rem; }
+  li { margin: 0.4rem 0; }
+  code {
+    font-family: var(--mono); font-size: 0.86em;
+    background: var(--bg-inset); padding: 0.08em 0.35em; border-radius: 3px;
+  }
+
+  .eyebrow {
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--marker); margin: 0;
+  }
+  .lede { font-size: 1.08rem; color: var(--ink-mute); margin-top: 0; }
+  .meta { font-family: var(--mono); font-size: 0.78rem; color: var(--ink-mute); }
+
+  .verdict-box {
+    margin: 1.6rem 0; padding: 1.2rem 1.4rem; background: var(--bg-raise);
+    border: 1px solid var(--line); border-left: 3px solid var(--accent);
+  }
+  .verdict-box .k {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-mute); display: block; margin-bottom: 0.4rem;
+  }
+  .verdict-box p:first-of-type { margin-top: 0; }
+  .verdict-box strong { color: var(--accent); }
+
+  nav.toc {
+    margin: 1.8rem 0 0; padding: 1rem 1.2rem; background: var(--bg-inset);
+    border: 1px solid var(--line); font-size: 0.86rem;
+  }
+  nav.toc .k {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-mute); margin: 0 0 0.6rem;
+  }
+  nav.toc ol { margin: 0; padding-left: 1.2rem; columns: 2; column-gap: 1.6rem; }
+  nav.toc a { text-decoration: none; }
+  nav.toc a:hover { text-decoration: underline; }
+
+  .conf {
+    display: inline-block; font-family: var(--mono); font-size: 0.64rem;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.12em 0.5em; border-radius: 3px; margin-left: 0.5rem;
+    border: 1px solid currentColor; vertical-align: middle;
+  }
+  .conf.high { color: var(--risk-low); }
+  .conf.mid { color: var(--risk-mid); }
+  .conf.gap { color: var(--risk-high); }
+
+  .finding {
+    margin: 1.2rem 0; padding: 1.1rem 1.3rem; background: var(--bg-raise);
+    border: 1px solid var(--line); border-left: 4px solid var(--risk-low); border-radius: 4px;
+  }
+  .finding.mid-conf { border-left-color: var(--risk-mid); }
+  .finding .fnum {
+    font-family: var(--mono); font-size: 0.72rem; color: var(--ink-mute); margin-right: 0.3rem;
+  }
+  .finding p { margin: 0.5rem 0; }
+  .finding .src { font-size: 0.78rem; color: var(--ink-mute); font-style: italic; }
+
+  .decision-callout {
+    margin: 1rem 0; padding: 0.9rem 1.1rem; background: var(--bg-inset);
+    border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    font-size: 0.9rem;
+  }
+  .decision-callout .k {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 0.3rem;
+  }
+
+  .gap-box {
+    margin: 1rem 0; padding: 0.9rem 1.1rem; background: var(--bg-inset);
+    border: 1px solid var(--line); border-left: 3px solid var(--risk-high);
+    font-size: 0.88rem;
+  }
+  .gap-box .k {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--risk-high); display: block; margin-bottom: 0.3rem;
+  }
+
+  .rec-list { margin: 1.2rem 0; padding: 0; list-style: none; }
+  .rec-list li {
+    margin: 0.6rem 0; padding: 0.7rem 1rem; background: var(--bg-raise);
+    border: 1px solid var(--line); border-radius: 4px; font-size: 0.92rem;
+  }
+  .rec-tag {
+    display: inline-block; font-family: var(--mono); font-size: 0.62rem;
+    letter-spacing: 0.06em; text-transform: uppercase; padding: 0.1em 0.45em;
+    border-radius: 3px; margin-right: 0.5rem; background: var(--bg-inset);
+  }
+  .rec-tag.sourced { color: var(--risk-low); border: 1px solid var(--risk-low); }
+  .rec-tag.extra { color: var(--marker); border: 1px solid var(--marker); }
+
+  .two-col {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 1.4rem 0;
+  }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } nav.toc ol { columns: 1; } h1 { font-size: 1.5rem; } }
+
+  .robust-box, .thin-box {
+    padding: 1rem 1.2rem; background: var(--bg-raise); border: 1px solid var(--line);
+    border-radius: 4px; font-size: 0.88rem;
+  }
+  .robust-box { border-left: 4px solid var(--risk-low); }
+  .thin-box { border-left: 4px solid var(--risk-mid); }
+  .robust-box h3, .thin-box h3 { margin-top: 0; }
+  .robust-box h3 { color: var(--risk-low); }
+  .thin-box h3 { color: var(--risk-mid); }
+
+  .refuted-list {
+    font-size: 0.84rem; color: var(--ink-mute); margin: 1rem 0;
+    padding: 0.9rem 1.1rem; background: var(--bg-inset); border: 1px solid var(--line);
+  }
+  .refuted-list .k {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-mute); display: block; margin-bottom: 0.5rem;
+  }
+  .refuted-list ul { margin: 0; }
+
+  footer {
+    margin-top: 3.5rem; padding-top: 1.4rem; border-top: 1px solid var(--line);
+    font-size: 0.8rem; color: var(--ink-mute); font-family: var(--mono);
+  }
+</style>
+
+<main>
+  <p class="eyebrow">ChoomLink — Deep-Research-Synthese · 2026-07-13</p>
+  <h1>Viability &amp; Game-Feel — Findings</h1>
+  <p class="lede">Was macht ChoomLink bis zum Community-Launch überlebensfähig, und was macht es sich gut anfühlen? Workflow-Recherche (5 Suchwinkel, 21 Quellen) plus drei gezielte Nachrecherchen zu den dünnsten Stellen.</p>
+  <p class="meta">Kein CyberpunkMP-Quellcode gelesen — nur öffentliche Docs/Talks/Posts. Quelle: Workflow <code>wf_5f7cc6a3-1fb</code> + 3 Folge-Agenten.</p>
+
+  <div class="verdict-box">
+    <span class="k">Ehrliche Einordnung</span>
+    <p>Der Erst-Workflow deckte den Auftrag <strong>nicht vollständig</strong> in der Tiefe der Architektur-Recherche ab — stark bei Onboarding-Reibung und rechtlichem Präzedenzrisiko, dünn bei Netcode-Feel-Parametern und CDPR-spezifischem Recht. Drei fokussierte Nachrecherche-Agenten haben die Lücken geschlossen. Zwei Punkte bleiben offen, weil sie ein Mensch im Browser klären muss (GDC-Video hinter Login, Valve-Wiki blockiert automatisierte Abrufe).</p>
+  </div>
+
+  <nav class="toc">
+    <p class="k">Inhalt</p>
+    <ol>
+      <li><a href="#kernbefunde">Kernbefunde (Erst-Workflow)</a></li>
+      <li><a href="#cdpr">CDPR-Rechtslage</a></li>
+      <li><a href="#feel">Netcode-Feel-Parameter</a></li>
+      <li><a href="#postmortems">Solo-Dev-Postmortems</a></li>
+      <li><a href="#offen">Offene Fragen</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="kernbefunde"><span class="num">01</span> Kernbefunde aus dem Erst-Workflow</h2>
+
+  <div class="finding">
+    <p><span class="fnum">①</span><strong>Patch-Kompatibilität ist strukturell reaktiv und unregelmäßig getaktet.</strong><span class="conf high">hoch</span></p>
+    <p>RED4ext-Lücken von bis zu ~6 Monaten zwischen Kompatibilitäts-Releases sind real dokumentiert (v1.27.0→v1.28.0: 175 Tage).</p>
+    <div class="decision-callout">
+      <span class="k">Projektentscheidung 2026-07-13</span>
+      <p style="margin:0">ChoomLink pinnt sich auf <strong>v2.31</strong> und ist NICHT verpflichtet, neuen Patches hinterherzuziehen — dieselbe Strategie wie FiveMs feste GTA-Builds. Patch-Lag wird damit von wiederkehrendem Risiko zu einmaliger, bewusster Wahl. Server prüft Client-Version beim Join; ein Versionssprung ist später ein geplantes Projekt, kein Zwang.</p>
+    </div>
+    <p class="src">github.com/WopsS/RED4ext/releases — primär</p>
+  </div>
+
+  <div class="finding">
+    <p><span class="fnum">②</span><strong>Selbst beste Distributions-Tools (Wabbajack, r2modman) lösen Onboarding-Reibung nicht vollständig.</strong><span class="conf high">hoch</span></p>
+    <p>Wabbajack braucht offiziell dokumentiert 7–10 Schritte, Minuten bis Stunden. r2modman/Thunderstore ist deutlich leichter (One-Click, Profil-Export).</p>
+    <p><strong>Lektion:</strong> ChoomLink-Installer eher am r2modman-Modell (leichtgewichtiger Modmanager + Profile) orientieren, nicht am Wabbajack-Modell.</p>
+    <p class="src">wabbajack.org, wiki.wabbajack.org, github.com/ebkr/r2modmanPlus</p>
+  </div>
+
+  <div class="finding">
+    <p><span class="fnum">③</span><strong>Mod-Listen-Parität wird serverseitig per Kick-bei-Mismatch durchgesetzt.</strong><span class="conf high">hoch</span></p>
+    <p>Skyrim Together Reborn: nur 3 offiziell kompatible Mods, Server validiert Load-Order und kickt bei Abweichung. Direkt übertragbar — deckt sich mit dem "nie dem Client vertrauen"-Prinzip aus der Architektur-Recherche.</p>
+    <p class="src">gamerevolution.com</p>
+  </div>
+
+  <div class="finding">
+    <p><span class="fnum">④</span><strong>Größtes externes Risiko: Publisher-Durchsetzung, nicht Technik.</strong><span class="conf high">hoch (GTA-Fakten)</span></p>
+    <p>Take-Two schaltete 2026 sowohl alt:V als auch RAGE:MP ab, konsolidierte GTA-V-Multiplayer-Modding auf das selbst aufgekaufte FiveM. <strong>Betrifft GTA V/Take-Two, nicht CDPR direkt</strong> — als Präzedenzfall-Warnung, nicht Beweis. Details zu CDPRs eigener Haltung: Abschnitt 2.</p>
+    <p class="src">gtaboom.com, notebookcheck.net, PC Gamer, Dexerto, Kotaku (5+ Quellen)</p>
+  </div>
+
+  <div class="finding">
+    <p><span class="fnum">⑤</span><strong>Community-/Reputationsfehler schaden Multiplayer-Mods genauso wie technische Probleme.</strong><span class="conf high">hoch</span></p>
+    <p>Skyrim Together: Backlash für "wir schulden der Community nichts" trotz Patreon-Finanzierung, plus Code-Klau-Vorwurf (später öffentlich entschuldigt).</p>
+    <p><strong>Lehre:</strong> Erwartungsmanagement und Alpha-Transparenz sind kein Nice-to-have, sondern historisch ein Bruchpunkt für genau diese Projektklasse.</p>
+    <p class="src">altchar.com, gamedeveloper.com</p>
+  </div>
+
+  <div class="finding mid-conf">
+    <p><span class="fnum">⑥</span><strong>Overwatchs Command-Frame-Modell</strong> als meistzitierte PvP-Netcode-Feel-Referenz.<span class="conf mid">mittel</span></p>
+    <p>Client läuft ~halbe Round-Trip-Time voraus. Einzige überlebende Quelle: ein Blogpost, der den GDC-Talk 2017 zusammenfasst — Primärquelle nicht erreichbar (siehe Abschnitt 3).</p>
+  </div>
+
+  <div class="refuted-list">
+    <span class="k">Zur Transparenz — verworfen bei der Verifikation</span>
+    <ul>
+      <li>Wabbajack als reibungsloses One-Click-Erlebnis (1-2 verworfen)</li>
+      <li>Skyrim Together kompatibel mit "allen Creation-Kit-Mods" (0-3 verworfen)</li>
+      <li>Bestimmte Engine-Fix-Mods explizit inkompatibel (1-2, unzureichend belegt)</li>
+      <li><code>fps-netcode</code>-Repo implementiert Client-Prediction / Reconciliation (je 1-2 verworfen)</li>
+    </ul>
+  </div>
+
+  <h2 id="cdpr"><span class="num">02</span> CDPRs rechtliche Haltung zu Mods/Multiplayer</h2>
+
+  <div class="gap-box">
+    <span class="k">Kein CDPR-Statement existiert</span>
+    <p style="margin:0">Weder positiv noch negativ, trotz CyberpunkMPs mehrjähriger öffentlicher Existenz (2020 Start, 2024 Alpha, 2025 Beta). Echte, bestätigte Lücke — CDPR hat sich dazu schlicht nie geäußert. Alles Folgende ist Ableitung aus tatsächlichem CDPR-Handeln.</p>
+  </div>
+
+  <ul>
+    <li><strong>Fan-Content-Guidelines</strong> (von der EULA referenziert): kein kommerzieller Gebrauch, keine Paywalls, optionale Spenden okay, kein CDPR-Branding im Projektnamen, Pflicht-Disclaimer. Nichts erwähnt Multiplayer/Server spezifisch.</li>
+    <li><strong>REDmod vs. RED4ext/redscript:</strong> offizielle Modding-Seite dokumentiert nur REDmod. RED4ext/redscript existieren seit Jahren offen, ohne je CDPR-Einschreiten — "faktische Duldung durch Nicht-Handeln", keine ausdrückliche Erlaubnis.</li>
+    <li><strong>Track Record vs. Take-Two:</strong> CDPRs einzige je dokumentierte Mod-Abmahnung (Luke Ross' Cyberpunk-VR-Mod, Jan. 2026) war ausschließlich monetarisierungsgetrieben — mit explizitem Rückkehr-Weg ("mach's kostenlos"). Für Witcher 3 lieferte CDPR sogar offiziell REDkit nach. Scharfer Kontrast zu Take-Twos Kahlschlag gegen alt:V/RAGE:MP, der um bloße Plattform-Existenz ging, nicht Monetarisierung.</li>
+  </ul>
+
+  <div class="gap-box">
+    <span class="k">Der eine echte Risiko-Punkt</span>
+    <p style="margin:0">EULA Punkt 24 verbietet wörtlich <em>"creation or use of private servers"</em> — unter der Überschrift Netzwerk-/IT-Interferenz, neben Tunneling/Code-Injection. Breit genug, um wörtlich jeden Fan-Server zu treffen, aber Kontext deutet auf Schutz von CDPRs eigener Anti-Cheat-Infrastruktur hin. <strong>Nie gegen einen Mod ausgelegt oder durchgesetzt</strong> — weder bestätigt noch dementiert für Fan-Multiplayer.</p>
+  </div>
+
+  <div class="verdict-box">
+    <span class="k">Verdikt für ChoomLink</span>
+    <p style="margin:0">Kein Grund zur Panik, aber auch keine Entwarnung. CDPRs generelle Haltung (nicht-kommerziell, kein Branding-Missbrauch, keine Paywalls) begünstigt ChoomLink stark, solange diese drei Linien eingehalten werden. Die private-Server-Klausel bleibt echtes, ungetestetes Risiko mit realistisch niedriger Priorität, solange das Projekt klein, kostenlos und branding-sauber bleibt. <strong>CDPR ist nach tatsächlichen Vorfällen nachweislich mod-freundlicher als Take-Two.</strong></p>
+  </div>
+
+  <h2 id="feel"><span class="num">03</span> Netcode-Feel-Parameter aus Primärquellen</h2>
+
+  <p>Diesmal wurden echte Primärquellen direkt abgerufen (Gambettas Artikelserie, Unitys NGO-Doku — beide vollständig gefetcht) statt Blog-Zusammenfassungen von Zusammenfassungen.</p>
+
+  <div class="two-col">
+    <div class="robust-box">
+      <h3>Erreicht &amp; verifiziert</h3>
+      <ul>
+        <li><strong>Entity-Interpolation</strong> (Gambetta + Unity NGO, primär): Client puffert ≥2 Server-Snapshots, rendert Remote-Entities ~eine Tick-Periode (~100&nbsp;ms) in der Vergangenheit, linear interpoliert. "Generally imperceptible" für Bewegungsglättung.</li>
+        <li><strong>Client-Prediction + Reconciliation</strong> (Gambetta, primär) — nur relevant, falls ChoomLink je lokale Spieler-Inputs vorhersagt, nicht für Remote-Puppets.</li>
+        <li><strong>Wahrnehmungsschwellen</strong> (ACM CHI PLAY, Peer-Review, DOI): erfahrene FPS-Spieler nehmen Latenz ab ~15&nbsp;ms wahr — betrifft aber Input-zu-Aktion, nicht Remote-Puppet-Feel.</li>
+      </ul>
+    </div>
+    <div class="thin-box">
+      <h3>Blockiert / nicht erreichbar</h3>
+      <ul>
+        <li><strong>Valve-Entwicklerwiki</strong> (<code>cl_interp</code>, Lag Compensation): HTTP 403, zweimal bestätigt. Jede kursierende Zahl von dort bleibt unverifiziert.</li>
+        <li><strong>Overwatch-GDC-Talk</strong> (Tim Ford, 2017): lokalisiert, aber Video hinter GDC-Vault-Login — Inhalt/Zahlen nicht extrahierbar.</li>
+        <li>Riots "Peeker's Advantage" nur über Sekundärquelle erreicht (mittlere Konfidenz).</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Konkrete Empfehlungen für die Proxy-Follow-Architektur</h3>
+  <ul class="rec-list">
+    <li><span class="rec-tag sourced">belegt</span> Puffert/glättet die <strong>Zielposition des Proxys</strong> — Verzögerung von ~einem Broadcast-Intervall (~100&nbsp;ms bei 10&nbsp;Hz) vor dem Teleport, statt sofortigem Snap.</li>
+    <li><span class="rec-tag extra">Extrapolation</span> Paket-Verlust-Puffertiefe ~2–3 Pakete als Startwert, empirisch nachjustieren — Source-spezifische Ratio-Zahlen nicht verifizierbar diesmal.</li>
+    <li><span class="rec-tag extra">Extrapolation</span> Distanzbasierte Broadcast-Rate (10&nbsp;Hz nah, 2–5&nbsp;Hz fern) passt zur geplanten Interessens-Management-Phase.</li>
+    <li><span class="rec-tag extra">Extrapolation</span> "Harter Snap"-Schwellenwert braucht empirischen Test mit <code>ingame-verify</code> — keine externe Quelle behandelt <code>AIFollowTargetCommand</code>-spezifisches Gait-Flapping.</li>
+    <li>Kampf-/Hit-Registration-Tuning explizit <strong>getrennt</strong> von Lokomotions-Tuning behandeln.</li>
+  </ul>
+
+  <h2 id="postmortems"><span class="num">04</span> Solo-Dev-Postmortems jenseits Skyrim Together</h2>
+
+  <p>Fünf zusätzliche unabhängige Fälle: Thorium Mod/Terraria, Fabric/Minecraft, Nexus Mods, ReShade, ENB, Project Zomboid, DerangedTeddy/Cities Skylines&nbsp;II, Calamity Mod.</p>
+
+  <div class="two-col">
+    <div class="robust-box">
+      <h3>Robust (mehrere Quellen stimmen überein)</h3>
+      <ul>
+        <li><strong>Dünn schippen, nicht Feature-Vollständigkeit jagen</strong> — 71% von 24 Postmortems berichten Scope-Probleme; Multiplayer nur wenn essenziell.</li>
+        <li><strong>Tip-Jar ja, Zahl-für-Zugang riskant</strong> — Nexus' Richtlinie verbietet Spenden-für-Zugang; ReShade/tModLoader fahren ungegatet.</li>
+        <li><strong>Erste Mitstreiter aus informeller Vorleistung</strong> — Thorium/Fabric: erst unaufgefordert beigetragen, dann eingeladen.</li>
+        <li><strong>Kommunikations-Konsistenz schlägt Frequenz</strong> — nie Termine versprechen, die nicht gehalten werden.</li>
+        <li><strong>Strukturelle Lösungen schlagen Willenskraft bei Burnout</strong> — Nexus-Gründer: komplette Übergabe; DerangedTeddy: öffentliches Ultimatum.</li>
+      </ul>
+    </div>
+    <div class="thin-box">
+      <h3>Dünn — mit Vorsicht behandeln</h3>
+      <ul>
+        <li>"Patch-Chasing-Burnout" — weit verbreitete Folklore, kaum in Ich-Form dokumentiert.</li>
+        <li>Project Zomboids Scope-Geschichte ist in den Quellen selbst umstritten.</li>
+        <li>Calamity Mods Massenabgang — dramatischer Einzelfall, kein Muster.</li>
+        <li>ENB als Early-Access-Modell — läuft der einzigen klaren Richtlinie (Nexus) zuwider, nicht validiert.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 id="offen"><span class="num">05</span> Offene Fragen — Stand nach Nachrecherche</h2>
+  <ul>
+    <li><s>Hat CDPR je eine Haltung zu CP2077-Multiplayer-Mods geäußert?</s> <strong>Geklärt (negativ)</strong> — nie geäußert, Track Record trotzdem aussagekräftig.</li>
+    <li><strong>Weiterhin offen, braucht einen Menschen:</strong> Overwatch-GDC-Talk-Inhalt (hinter Login).</li>
+    <li><strong>Weiterhin offen, braucht einen Menschen:</strong> Valve-`cl_interp`-Originalwerte (Wiki blockiert automatisierte Abrufe — direkt im Browser öffnen).</li>
+    <li>RED4ext-Patch-Lag-Auswirkung auf Cyberverses Wartungsaufwand — <strong>entschärft</strong> durch die Versionspinning-Entscheidung (v2.31).</li>
+  </ul>
+
+  <footer>
+    Quelle: Deep-Research-Workflow <code>wf_5f7cc6a3-1fb</code> + 3 Nachrecherche-Agenten, 2026-07-13 · Vollständiger Bericht mit allen Zitaten: <code>docs/research/2026-07-13-viability-and-feel-findings.md</code>
+  </footer>
+</main>
