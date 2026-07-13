@@ -6,6 +6,37 @@
 > die verdichtete Entscheidungsgrundlage. Kein CyberpunkMP-Quellcode wurde
 > in irgendeiner Recherche gelesen — nur öffentliche Dokumentation/Talks.
 
+## Quellenlage-Einordnung
+
+Nicht alle Befunde stehen auf gleich solidem Boden. Zur Transparenz:
+
+- **Hohe Konfidenz (offizielle Primärquellen):** FiveM/Cfx.re (OneSync-Docs,
+  Routing-Bucket-Docs), alt:V (offizielle Dokumentation inkl. Migrations-
+  Distanz-Werten), MTA:SA (Wiki mit Sync-Interval-Settings), Skyrim Together
+  Reborn (offizielle technische Doku zu LocalActor/RemoteActor), Rust/DayZ/
+  Minecraft (offizielle Engine-/Server-Doku). Die drei Autoritäts-Ebenen und
+  das Fork-Verdikt stützen sich durchgehend auf diese Quellenklasse.
+- **Mittlere Konfidenz (Sekundär-/Community-Quellen, aber mehrfach
+  korroboriert):** die Take-Two-Shutdowns von alt:V/RAGE:MP (5+ unabhängige
+  Pressequellen, konsistent), RAGE:MP allgemein (offizielle Doku dünner als
+  bei FiveM/alt:V — "keine Ownership-API dokumentiert" ist ein Fehlen von
+  Evidenz, keine bestätigte Verneinung).
+- **Niedrige Konfidenz, explizit als solche markiert:** **GTA Onlines
+  Tick-Rate (~30 Hz) und die O(n²)-Skalierungsillustration ("4 Spieler → 12
+  Streams, 8 → 56")** stammen aus Community-/Sekundärquellen, nicht aus
+  einem offiziellen Rockstar-Engineering-Talk — kein solcher Talk wurde trotz
+  gezielter Suche gefunden. Zu behandeln als **richtungsweisend (die
+  qualitative O(n²)-Charakteristik ist branchenweit belegt), nicht als
+  exakte Zahl.** Ebenso GTA Onlines Session-/Matchmaking-Architektur:
+  ausschließlich aus Rockstar-Support-Artikeln und Community-Wikis, kein
+  offizieller Architektur-Talk gefunden — als illustratives Negativbeispiel
+  zu lesen, nicht als belegte Engineering-Wahrheit.
+
+Für die Kernentscheidung (Autoritätsmodell, Fork-Verdikt, Phase-1-Priorität)
+ändert das nichts — die tragenden Argumente stehen auf der hohen-Konfidenz-
+Quellenklasse. Die niedrig-konfidenten Zahlen sind nur Illustrationen des
+Skalierungsproblems, keine Grundlage für konkrete Kapazitätsplanung.
+
 ## a) Empfohlene Zielarchitektur (eine Seite, entscheidend)
 
 **ChoomLink wird ein server-vermittelter Relay mit clientseitiger Simulation

@@ -158,6 +158,27 @@
     font-size: 0.9rem;
   }
 
+  .conf {
+    display: inline-block; font-family: var(--mono); font-size: 0.62rem;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.1em 0.45em; border-radius: 3px; margin-left: 0.4rem;
+    border: 1px solid currentColor; vertical-align: middle;
+  }
+  .conf.high { color: var(--risk-low); }
+  .conf.mid { color: var(--risk-mid); }
+  .conf.low { color: var(--risk-high); }
+
+  .quellen-box {
+    margin: 1.4rem 0; padding: 1.1rem 1.3rem; background: var(--bg-inset);
+    border: 1px solid var(--line); font-size: 0.88rem;
+  }
+  .quellen-box .k {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-mute); display: block; margin-bottom: 0.6rem;
+  }
+  .quellen-box ul { margin: 0.4rem 0; }
+  .quellen-box li { margin: 0.5rem 0; }
+
   footer {
     margin-top: 3.5rem; padding-top: 1.4rem; border-top: 1px solid var(--line);
     font-size: 0.8rem; color: var(--ink-mute); font-family: var(--mono);
@@ -183,6 +204,7 @@
   <nav class="toc">
     <p class="k">Inhalt</p>
     <ol>
+      <li><a href="#quellenlage">Quellenlage-Einordnung</a></li>
       <li><a href="#architektur">Empfohlene Zielarchitektur</a></li>
       <li><a href="#matrix">Vergleichsmatrix</a></li>
       <li><a href="#roadmap">Evolutions-Roadmap</a></li>
@@ -190,6 +212,18 @@
       <li><a href="#risiken">Risiken bei 16/32/64 Spielern</a></li>
     </ol>
   </nav>
+
+  <h2 id="quellenlage"><span class="num">00</span> Quellenlage-Einordnung</h2>
+  <p>Nicht alle Befunde stehen auf gleich solidem Boden. Zur Transparenz, bevor die Zielarchitektur im Detail folgt:</p>
+  <div class="quellen-box">
+    <span class="k">Hoch <span class="conf high">hoch</span></span>
+    <p style="margin:0.3rem 0 0.8rem">Offizielle Primärquellen: FiveM/Cfx.re (OneSync-, Routing-Bucket-Docs), alt:V (offizielle Doku inkl. Migrations-Distanz-Werten), MTA:SA (Wiki mit Sync-Interval-Settings), Skyrim Together Reborn (offizielle Technik-Doku), Rust/DayZ/Minecraft (offizielle Engine-Doku). Die drei Autoritäts-Ebenen und das Fork-Verdikt stützen sich durchgehend hierauf.</p>
+    <span class="k">Mittel <span class="conf mid">mittel</span></span>
+    <p style="margin:0.3rem 0 0.8rem">Sekundärquellen, aber mehrfach korroboriert: die Take-Two-Shutdowns von alt:V/RAGE:MP (5+ unabhängige Pressequellen), RAGE:MP allgemein (dünnere offizielle Doku als FiveM/alt:V — Fehlen von Evidenz, keine bestätigte Verneinung).</p>
+    <span class="k">Niedrig, explizit markiert <span class="conf low">niedrig</span></span>
+    <p style="margin:0.3rem 0 0">GTA Onlines Tick-Rate (~30&nbsp;Hz) und die O(n²)-Skalierungsillustration ("4→12, 8→56 Streams") stammen aus Community-Quellen — kein offizieller Rockstar-Talk gefunden. <strong>Richtungsweisend, keine exakte Zahl.</strong> Ebenso GTA Onlines Session-Architektur: nur Support-Artikel/Wikis, kein Engineering-Talk — illustratives Negativbeispiel, keine belegte Engineering-Wahrheit.</p>
+  </div>
+  <p class="meta">Für die Kernentscheidung ändert das nichts — die tragenden Argumente stehen auf der hohen Quellenklasse. Die niedrig-konfidenten Zahlen illustrieren nur das Skalierungsproblem, keine Kapazitätsplanungs-Grundlage.</p>
 
   <h2 id="architektur"><span class="num">01</span> Empfohlene Zielarchitektur</h2>
 
@@ -208,7 +242,7 @@
     <strong>Anti-Cheat, ehrlich formuliert:</strong> kein Server in diesem Genre erreicht simulationsgenauen Schutz. Realistischer Anspruch: Kosten des Cheatens erhöhen, Schaden begrenzen — kein Kernel-Level-Anti-Cheat, das ist für einen Solo-Modder die falsche Gewichtsklasse.
   </div>
 
-  <p><strong>Sync/Skalierung:</strong> Das aktuelle Full-Broadcast-Modell (10&nbsp;Hz an alle) skaliert <strong>O(n²)</strong> im Payload-Fanout — 8→32 Spieler ist nicht 4×, sondern grob 16× Traffic. Interessens-Management (Culling-Radius 400–500 Einheiten, FiveM/alt:V/RAGE:MP-Standard) ist der mit Abstand größte Hebel.</p>
+  <p><strong>Sync/Skalierung:</strong> Das aktuelle Full-Broadcast-Modell (10&nbsp;Hz an alle) skaliert <strong>O(n²)</strong> im Payload-Fanout — 8→32 Spieler ist nicht 4×, sondern grob 16× Traffic.<span class="conf mid">Illustration, mittel</span> Die O(n²)-Charakteristik selbst ist branchenweit belegt (hoch), die konkrete 16×-Zahl stammt aus einer Community-Illustration, nicht offizieller Quelle. Interessens-Management (Culling-Radius 400–500 Einheiten, FiveM/alt:V/RAGE:MP-Standard) ist der mit Abstand größte Hebel.</p>
 
   <p><strong>Session-Ebene:</strong> Freeroam + Instanzen als <strong>ein persistenter Serverprozess mit In-Memory-Partitionierungsschlüssel</strong> (FiveM "routing buckets", alt:V "dimensions") — nicht Prozess-pro-Instanz. Instanz-Eintritt über serverseitige Trigger-Zonen, analog GTA Onlines Missions-Blips.</p>
 
@@ -222,7 +256,7 @@
       </thead>
       <tbody>
         <tr class="row-dead">
-          <td>GTA Online<span class="tag">Negativbeispiel</span></td>
+          <td>GTA Online<span class="tag">Negativbeispiel</span><span class="conf low">niedrig</span></td>
           <td>P2P (Host+Peers)</td>
           <td>Kein Schiedsrichter</td>
           <td>Kein Modell</td>
@@ -246,7 +280,7 @@
           <td>300–600/Server</td>
         </tr>
         <tr class="row-dead">
-          <td>RAGE:MP<span class="tag">2026 abgeschaltet</span></td>
+          <td>RAGE:MP<span class="tag">2026 abgeschaltet</span><span class="conf mid">mittel</span></td>
           <td>Dedizierter Server</td>
           <td>Stärker server-autoritativ</td>
           <td>Streaming in/out, kein Owner-API</td>
