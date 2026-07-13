@@ -4,6 +4,42 @@
 > gefetcht, 66 Behauptungen extrahiert, 25 adversarial verifiziert: 20
 > bestätigt / 5 verworfen). Quelle: `wf_5f7cc6a3-1fb`.
 
+## Quellenlage-Einordnung
+
+Wie beim Architektur-Bericht: nicht alle Befunde stehen auf gleich solidem
+Boden. Zusammengefasst über den Erst-Workflow UND die drei Nachrecherchen:
+
+- **Hohe Konfidenz (direkt gefetchte Primärquellen/offizielle Dokumente):**
+  RED4ext-Release-Historie (GitHub, primär), Wabbajack/r2modman-Doku,
+  Skyrim-Together-Mod-Paritäts-Mechanismus, Nexus Mods' Spenden-Richtlinie
+  (Plattform-eigene Regel), CDPRs Fan-Content-Guidelines und EULA-Text
+  (beide direkt abgerufen und zitiert), der Luke-Ross-VR-Mod-Fall und
+  Take-Two/RAGE:MP/alt:V-Shutdown-Fakten (5+ unabhängige Pressequellen),
+  Gambettas Artikelserie und Unitys Netcode-Doku (beide vollständig
+  gefetcht, keine Sekundärzusammenfassung), das ACM-CHI-PLAY-Paper
+  (Peer-Review, DOI vorhanden).
+- **Mittlere Konfidenz (Sekundärquellen oder firmenübergreifende Synthese):**
+  Riots "Peeker's Advantage"-Zahlen (nur über Such-Snippet erreicht, nicht
+  direkt gefetcht), Overwatchs Command-Frame-Modell (nur ein Blogpost, der
+  den GDC-Talk zusammenfasst — Primärquelle nicht erreichbar), **der
+  CDPR-vs-Take-Two-Vergleich** ("CDPR ist mod-freundlicher") — das ist eine
+  Synthese über zwei verschiedene Firmen-Historien, keine direkte
+  Gegenüberstellung aus einer Quelle, die einzelnen Solo-Dev-Postmortem-
+  Fälle (Thorium/Fabric/ENB/DerangedTeddy — jeweils Einzelbeispiele, nicht
+  branchenweiter Konsens).
+- **Niedrig/echte Lücke, explizit offen gelassen:** Overwatch-GDC-Talk-
+  Originalinhalt (Video hinter Login, nicht extrahierbar), Valve-
+  Entwicklerwiki-Werte (`cl_interp` — HTTP 403, automatisierte Abrufe
+  komplett blockiert), das "Patch-Chasing-Burnout"-Narrativ (verbreitete
+  Folklore, kaum in Ich-Form belegt), **wie CDPRs private-Server-EULA-
+  Klausel tatsächlich ausgelegt würde** (nie getestet, nie kommentiert —
+  siehe CDPR-Abschnitt unten).
+
+Für die Projektentscheidungen, die bereits getroffen wurden (Versionspinning
+auf v2.31, serverseitige Mod-Paritätsprüfung), ändert das nichts — die
+tragenden Fakten stehen auf der hohen Quellenklasse. Die mittel/niedrig
+eingestuften Punkte sind dort markiert, wo sie im Bericht auftauchen.
+
 ## Ehrliche Einordnung der Abdeckung
 
 Der Workflow hat den Auftrag aus `2026-07-13-viability-and-feel-research-prompt.md`

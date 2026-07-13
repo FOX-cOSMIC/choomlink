@@ -168,6 +168,18 @@
     margin-top: 3.5rem; padding-top: 1.4rem; border-top: 1px solid var(--line);
     font-size: 0.8rem; color: var(--ink-mute); font-family: var(--mono);
   }
+
+  .quellen-box {
+    margin: 1.4rem 0; padding: 1.1rem 1.3rem; background: var(--bg-inset);
+    border: 1px solid var(--line); font-size: 0.88rem;
+  }
+  .quellen-box .k {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--ink-mute); display: block; margin-bottom: 0.6rem;
+  }
+  .quellen-box p { margin: 0.3rem 0 0.8rem; }
+  .quellen-box p:last-child { margin-bottom: 0; }
+  .conf.low { color: var(--risk-high); }
 </style>
 
 <main>
@@ -184,6 +196,7 @@
   <nav class="toc">
     <p class="k">Inhalt</p>
     <ol>
+      <li><a href="#quellenlage">Quellenlage-Einordnung</a></li>
       <li><a href="#kernbefunde">Kernbefunde (Erst-Workflow)</a></li>
       <li><a href="#cdpr">CDPR-Rechtslage</a></li>
       <li><a href="#feel">Netcode-Feel-Parameter</a></li>
@@ -191,6 +204,18 @@
       <li><a href="#offen">Offene Fragen</a></li>
     </ol>
   </nav>
+
+  <h2 id="quellenlage"><span class="num">00</span> Quellenlage-Einordnung</h2>
+  <p>Wie beim Architektur-Bericht: nicht alle Befunde stehen auf gleich solidem Boden. Zusammengefasst über den Erst-Workflow UND die drei Nachrecherchen:</p>
+  <div class="quellen-box">
+    <span class="k">Hoch <span class="conf high">hoch</span></span>
+    <p>Direkt gefetchte Primärquellen/offizielle Dokumente: RED4ext-Release-Historie, Wabbajack/r2modman-Doku, Skyrim-Together-Mod-Paritäts-Mechanismus, Nexus Mods' Spenden-Richtlinie, <strong>CDPRs Fan-Content-Guidelines und EULA-Text</strong> (beide direkt abgerufen und zitiert), der Luke-Ross-VR-Mod-Fall und die Take-Two/RAGE:MP/alt:V-Shutdown-Fakten (5+ unabhängige Pressequellen), Gambettas Artikelserie und Unitys Netcode-Doku (vollständig gefetcht), das ACM-CHI-PLAY-Paper (Peer-Review, DOI).</p>
+    <span class="k">Mittel <span class="conf mid">mittel</span></span>
+    <p>Sekundärquellen oder firmenübergreifende Synthese: Riots "Peeker's Advantage"-Zahlen (nur Such-Snippet), Overwatchs Command-Frame-Modell (nur ein Blogpost), <strong>der CDPR-vs-Take-Two-Vergleich</strong> ("CDPR ist mod-freundlicher" — Synthese über zwei Firmen-Historien, keine direkte Gegenüberstellung), die einzelnen Solo-Dev-Postmortem-Fälle (Thorium/Fabric/ENB/DerangedTeddy — Einzelbeispiele, kein Branchenkonsens).</p>
+    <span class="k">Niedrig / echte Lücke <span class="conf low">niedrig</span></span>
+    <p style="margin-bottom:0">Overwatch-GDC-Talk-Originalinhalt (Login-gated), Valve-Wiki-Werte (HTTP 403, komplett blockiert), das "Patch-Chasing-Burnout"-Narrativ (Folklore), und <strong>wie CDPRs private-Server-EULA-Klausel tatsächlich ausgelegt würde</strong> — nie getestet, nie kommentiert.</p>
+  </div>
+  <p class="meta">Für die bereits getroffenen Projektentscheidungen (Versionspinning v2.31, serverseitige Mod-Paritätsprüfung) ändert das nichts — die tragenden Fakten stehen auf der hohen Quellenklasse.</p>
 
   <h2 id="kernbefunde"><span class="num">01</span> Kernbefunde aus dem Erst-Workflow</h2>
 
@@ -264,8 +289,8 @@
   </div>
 
   <div class="verdict-box">
-    <span class="k">Verdikt für ChoomLink</span>
-    <p style="margin:0">Kein Grund zur Panik, aber auch keine Entwarnung. CDPRs generelle Haltung (nicht-kommerziell, kein Branding-Missbrauch, keine Paywalls) begünstigt ChoomLink stark, solange diese drei Linien eingehalten werden. Die private-Server-Klausel bleibt echtes, ungetestetes Risiko mit realistisch niedriger Priorität, solange das Projekt klein, kostenlos und branding-sauber bleibt. <strong>CDPR ist nach tatsächlichen Vorfällen nachweislich mod-freundlicher als Take-Two.</strong></p>
+    <span class="k">Verdikt für ChoomLink <span class="conf mid">mittel — Synthese über zwei Firmen</span></span>
+    <p style="margin:0">Kein Grund zur Panik, aber auch keine Entwarnung. CDPRs generelle Haltung (nicht-kommerziell, kein Branding-Missbrauch, keine Paywalls) begünstigt ChoomLink stark, solange diese drei Linien eingehalten werden. <strong>Die private-Server-Klausel bleibt echtes, ungetestetes Risiko</strong><span class="conf low">niedrig — nie ausgelegt</span> mit realistisch niedriger Priorität, solange das Projekt klein, kostenlos und branding-sauber bleibt. <strong>CDPR ist nach tatsächlichen Vorfällen nachweislich mod-freundlicher als Take-Two.</strong></p>
   </div>
 
   <h2 id="feel"><span class="num">03</span> Netcode-Feel-Parameter aus Primärquellen</h2>
