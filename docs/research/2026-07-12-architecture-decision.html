@@ -1,0 +1,406 @@
+<title>ChoomLink — Zielarchitektur-Entscheidung</title>
+<style>
+  :root {
+    --bg: #0e1116; --bg-raise: #151a21; --bg-inset: #0a0d11;
+    --ink: #e8e6dd; --ink-mute: #97a0ac; --line: #262d37;
+    --accent: #53d6dd; --accent-dim: #2a6d72; --marker: #f0d264;
+    --risk-high: #e5484d; --risk-mid: #e8a33d; --risk-low: #58a86b;
+    --mono: "Cascadia Code", Consolas, "Courier New", monospace;
+    --sans: "Segoe UI", -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f2f1ea; --bg-raise: #ffffff; --bg-inset: #e9e8df;
+      --ink: #1c2025; --ink-mute: #5c6570; --line: #d8d6ca;
+      --accent: #0e7c85; --accent-dim: #9fc9cd; --marker: #a07d00;
+      --risk-high: #c73338; --risk-mid: #a86a12; --risk-low: #3c7d4e;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1116; --bg-raise: #151a21; --bg-inset: #0a0d11;
+    --ink: #e8e6dd; --ink-mute: #97a0ac; --line: #262d37;
+    --accent: #53d6dd; --accent-dim: #2a6d72; --marker: #f0d264;
+    --risk-high: #e5484d; --risk-mid: #e8a33d; --risk-low: #58a86b;
+  }
+  :root[data-theme="light"] {
+    --bg: #f2f1ea; --bg-raise: #ffffff; --bg-inset: #e9e8df;
+    --ink: #1c2025; --ink-mute: #5c6570; --line: #d8d6ca;
+    --accent: #0e7c85; --accent-dim: #9fc9cd; --marker: #a07d00;
+    --risk-high: #c73338; --risk-mid: #a86a12; --risk-low: #3c7d4e;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--ink); font-family: var(--sans);
+    line-height: 1.65; margin: 0; padding: 0 1.25rem;
+  }
+  main { max-width: 50rem; margin: 0 auto; padding: 3rem 0 6rem; }
+
+  h1, h2, h3 { font-family: var(--mono); text-wrap: balance; line-height: 1.25; }
+  h1 { font-size: 1.9rem; margin: 0.4rem 0 0.6rem; letter-spacing: -0.02em; }
+  h2 {
+    font-size: 1.3rem; margin: 3.4rem 0 1.1rem; padding-top: 1.6rem;
+    border-top: 1px solid var(--line); color: var(--accent);
+    display: flex; align-items: baseline; gap: 0.6rem;
+  }
+  h2 .num {
+    font-size: 0.85rem; color: var(--marker); letter-spacing: 0.1em;
+  }
+  h3 { font-size: 1.02rem; margin: 1.8rem 0 0.5rem; color: var(--ink); }
+  p { margin: 0.7rem 0; }
+  a { color: var(--accent); }
+  strong { color: var(--ink); }
+  ul, ol { padding-left: 1.3rem; }
+  li { margin: 0.35rem 0; }
+  code {
+    font-family: var(--mono); font-size: 0.86em;
+    background: var(--bg-inset); padding: 0.08em 0.35em; border-radius: 3px;
+  }
+
+  .eyebrow {
+    font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--marker); margin: 0;
+  }
+  .lede { font-size: 1.08rem; color: var(--ink-mute); margin-top: 0; }
+  .meta { font-family: var(--mono); font-size: 0.78rem; color: var(--ink-mute); }
+
+  .verdict-box {
+    margin: 1.6rem 0; padding: 1.2rem 1.4rem; background: var(--bg-raise);
+    border: 1px solid var(--line); border-left: 3px solid var(--accent);
+  }
+  .verdict-box .k {
+    font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-mute); display: block; margin-bottom: 0.4rem;
+  }
+  .verdict-box p:first-of-type { margin-top: 0; }
+  .verdict-box strong { color: var(--accent); }
+
+  nav.toc {
+    margin: 1.8rem 0 0; padding: 1rem 1.2rem; background: var(--bg-inset);
+    border: 1px solid var(--line); font-size: 0.86rem;
+  }
+  nav.toc .k {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-mute); margin: 0 0 0.6rem;
+  }
+  nav.toc ol { margin: 0; padding-left: 1.2rem; columns: 2; column-gap: 1.6rem; }
+  nav.toc a { text-decoration: none; }
+  nav.toc a:hover { text-decoration: underline; }
+
+  .table-wrap { overflow-x: auto; margin: 1rem 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.84rem; font-variant-numeric: tabular-nums; }
+  th, td { padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  th {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-mute); white-space: nowrap;
+  }
+  tr.row-highlight td { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+  tr.row-dead td { color: var(--ink-mute); }
+  .tag {
+    display: inline-block; font-family: var(--mono); font-size: 0.68rem;
+    padding: 0.1em 0.5em; border-radius: 3px; margin-left: 0.4rem;
+    background: var(--bg-inset); color: var(--risk-high); border: 1px solid var(--risk-high);
+  }
+
+  .roadmap { margin: 1.6rem 0; position: relative; padding-left: 1.6rem; }
+  .roadmap::before {
+    content: ""; position: absolute; left: 0.42rem; top: 0.4rem; bottom: 0.4rem;
+    width: 2px; background: var(--line);
+  }
+  .phase { position: relative; margin: 0 0 1.5rem; padding-left: 1rem; }
+  .phase::before {
+    content: ""; position: absolute; left: -1.6rem; top: 0.3rem;
+    width: 0.6rem; height: 0.6rem; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--accent);
+  }
+  .phase.later::before { border-color: var(--ink-mute); }
+  .phase h3 { margin: 0 0 0.25rem; font-size: 0.98rem; }
+  .phase .phase-label {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--marker); display: block; margin-bottom: 0.15rem;
+  }
+  .phase .shippable {
+    font-size: 0.82rem; color: var(--ink-mute); font-style: italic; margin-top: 0.4rem;
+  }
+
+  .tradeoff {
+    margin: 1.2rem 0; padding: 1rem 1.2rem; background: var(--bg-raise);
+    border: 1px solid var(--line); border-radius: 4px;
+  }
+  .tradeoff .choice {
+    font-family: var(--mono); font-size: 0.9rem; color: var(--accent); margin: 0 0 0.5rem;
+  }
+  .tradeoff .why-label {
+    font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-mute);
+  }
+
+  .risk-tiers { display: grid; gap: 1rem; margin: 1.4rem 0; }
+  .risk-tier {
+    padding: 1rem 1.2rem; background: var(--bg-raise); border: 1px solid var(--line);
+    border-left: 4px solid var(--risk-low); border-radius: 4px;
+  }
+  .risk-tier.mid { border-left-color: var(--risk-mid); }
+  .risk-tier.high { border-left-color: var(--risk-high); }
+  .risk-tier .n {
+    font-family: var(--mono); font-size: 1.4rem; color: inherit; float: right;
+    opacity: 0.35; line-height: 1;
+  }
+  .risk-tier h3 { margin-top: 0; }
+  .risk-tier.high h3 { color: var(--risk-high); }
+  .risk-tier.mid h3 { color: var(--risk-mid); }
+  .risk-tier.low h3 { color: var(--risk-low); }
+  .risk-tier ul { margin: 0.4rem 0 0; }
+
+  .callout {
+    margin: 1.4rem 0; padding: 0.9rem 1.1rem; background: var(--bg-inset);
+    border: 1px solid var(--line); border-left: 3px solid var(--risk-mid);
+    font-size: 0.9rem;
+  }
+
+  footer {
+    margin-top: 3.5rem; padding-top: 1.4rem; border-top: 1px solid var(--line);
+    font-size: 0.8rem; color: var(--ink-mute); font-family: var(--mono);
+  }
+
+  @media (max-width: 640px) {
+    nav.toc ol { columns: 1; }
+    h1 { font-size: 1.5rem; }
+  }
+</style>
+
+<main>
+  <p class="eyebrow">ChoomLink — Deep-Research-Synthese · 2026-07-12</p>
+  <h1>Zielarchitektur-Entscheidung</h1>
+  <p class="lede">Fünf parallele Recherche-Sessions zu Referenzarchitekturen, Autoritätsmodellen, Sync/Skalierung, Session-Ebene und Fork-vs-Neubau — verdichtet zur Entscheidungsgrundlage für die community-server-taugliche Zielarchitektur.</p>
+  <p class="meta">Kein CyberpunkMP-Quellcode wurde in irgendeiner Recherche gelesen — nur öffentliche Dokumentation/Talks.</p>
+
+  <div class="verdict-box">
+    <span class="k">Verdikt in einem Satz</span>
+    <p><strong>Server-vermittelter Relay mit clientseitiger Simulation</strong> und dreistufiger Autorität — architektonisch nahe FiveM/alt:V, nicht GTA Onlines P2P und nicht Skyrim Togethers "partial authority ohne Weltrepräsentation". <strong>Fork evolvieren, nicht neu bauen.</strong></p>
+  </div>
+
+  <nav class="toc">
+    <p class="k">Inhalt</p>
+    <ol>
+      <li><a href="#architektur">Empfohlene Zielarchitektur</a></li>
+      <li><a href="#matrix">Vergleichsmatrix</a></li>
+      <li><a href="#roadmap">Evolutions-Roadmap</a></li>
+      <li><a href="#tradeoffs">Trade-off-Protokolle</a></li>
+      <li><a href="#risiken">Risiken bei 16/32/64 Spielern</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="architektur"><span class="num">01</span> Empfohlene Zielarchitektur</h2>
+
+  <p>Die Referenzarchitektur-Recherche liefert einen mehrfach belegten Kausalzusammenhang: GTA Onlines schlechter Ruf (Mod-Menüs, Geld-Injection, IP-Sniffing für DDoS, ein RCE-fähiger CVE 2023) kommt strukturell daher, dass es <strong>keinen vertrauenswürdigen Schiedsrichter</strong> gibt — jeder Peer kann unvalidierten Zustand injizieren. FiveM gewann die Community genau deshalb, weil sein Server diese Rolle übernimmt: er kann Entity-Erzeugung verbieten, besitzt Entities unabhängig von Spieler-Anwesenheit, und ist der einzige Ort, an dem Wirtschaft/Inventar/Berechtigungen als Fakten existieren — <strong>ohne</strong> das Spiel selbst zu simulieren.</p>
+
+  <p>Skyrim Together Reborn ist die Gegenprobe: weil dort selbst NPC-KI von dem Client simuliert wird, der die Zelle geladen hat, bleibt es bei 2–8 Spielern und produziert framerate-abhängigen Desync. Diese Falle muss ChoomLink vermeiden — der Server muss so viel wie architektonisch möglich zentral <strong>arbitrieren</strong>, statt reine Weiterleitung zwischen Clients zu sein.</p>
+
+  <h3>Die drei Autoritäts-Ebenen</h3>
+  <ul>
+    <li><strong>Bewegung —</strong> client-simuliert, server-bucht die letzte Position als Register, server verwirft Unplausibles (Max-Speed/Zeit, Teleport-Distanz). Kein "server veto" durch Physik-Nachsimulation, sondern billige Arithmetik.</li>
+    <li><strong>Kampf/Schaden —</strong> client-erkannt (Hit-Detection geht nicht anders), server-gegated (Reichweite/Winkel/Feuerrate gegen zuletzt bekannte Positionen), server-committed (HP-Änderung ist eine eigene Server-Transaktion — ein Client setzt nie direkt HP).</li>
+    <li><strong>Wirtschaft/Inventar —</strong> vollständig serverautoritativ, reine Daten. Einzige Ebene ohne Echtzeit-Physik-Abhängigkeit — billigste, höchst-hebelige Investition zuerst.</li>
+  </ul>
+
+  <div class="callout">
+    <strong>Anti-Cheat, ehrlich formuliert:</strong> kein Server in diesem Genre erreicht simulationsgenauen Schutz. Realistischer Anspruch: Kosten des Cheatens erhöhen, Schaden begrenzen — kein Kernel-Level-Anti-Cheat, das ist für einen Solo-Modder die falsche Gewichtsklasse.
+  </div>
+
+  <p><strong>Sync/Skalierung:</strong> Das aktuelle Full-Broadcast-Modell (10&nbsp;Hz an alle) skaliert <strong>O(n²)</strong> im Payload-Fanout — 8→32 Spieler ist nicht 4×, sondern grob 16× Traffic. Interessens-Management (Culling-Radius 400–500 Einheiten, FiveM/alt:V/RAGE:MP-Standard) ist der mit Abstand größte Hebel.</p>
+
+  <p><strong>Session-Ebene:</strong> Freeroam + Instanzen als <strong>ein persistenter Serverprozess mit In-Memory-Partitionierungsschlüssel</strong> (FiveM "routing buckets", alt:V "dimensions") — nicht Prozess-pro-Instanz. Instanz-Eintritt über serverseitige Trigger-Zonen, analog GTA Onlines Missions-Blips.</p>
+
+  <h2 id="matrix"><span class="num">02</span> Vergleichsmatrix</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Plattform</th><th>Topologie</th><th>Autorität</th><th>Ownership</th><th>Persistenz</th><th>Spielerzahl</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="row-dead">
+          <td>GTA Online<span class="tag">Negativbeispiel</span></td>
+          <td>P2P (Host+Peers)</td>
+          <td>Kein Schiedsrichter</td>
+          <td>Kein Modell</td>
+          <td>Rockstar-Backend, kein Zugriff</td>
+          <td>~30/Session</td>
+        </tr>
+        <tr class="row-highlight">
+          <td><strong>FiveM/Cfx.re</strong></td>
+          <td>Dedizierter Server</td>
+          <td>Client-forward + Server-Konvention</td>
+          <td>Net-Owner, Orphan-Modus, Routing-Buckets</td>
+          <td>MySQL/MariaDB (ESX/QBCore)</td>
+          <td>bis 2048; Peak ~270k CCU plattformweit</td>
+        </tr>
+        <tr class="row-dead">
+          <td>alt:V<span class="tag">2026 abgeschaltet</span></td>
+          <td>Dedizierter Server</td>
+          <td>Server + delegierte Peer-Sim</td>
+          <td>netOwner, Hysterese 400/150</td>
+          <td>MongoDB (Rebar/Athena)</td>
+          <td>300–600/Server</td>
+        </tr>
+        <tr class="row-dead">
+          <td>RAGE:MP<span class="tag">2026 abgeschaltet</span></td>
+          <td>Dedizierter Server</td>
+          <td>Stärker server-autoritativ</td>
+          <td>Streaming in/out, kein Owner-API</td>
+          <td>MySQL/MariaDB, oft EF Core</td>
+          <td>Default 100, bis ~1000</td>
+        </tr>
+        <tr>
+          <td>MTA:SA</td>
+          <td>Dedizierter Server (RakNet)</td>
+          <td>Hybrid: Logik autoritativ, Bewegung Client-Syncer</td>
+          <td>Proximity-Syncer, <code>persist</code>-Lock</td>
+          <td>SQLite + optional MySQL</td>
+          <td>500+/Server, 36k+ plattformweit</td>
+        </tr>
+        <tr class="row-dead">
+          <td>Skyrim Together Reborn<span class="tag">Negativbeispiel</span></td>
+          <td>Dedizierter Server</td>
+          <td>"Partially authoritative" — keine Weltrepräsentation</td>
+          <td>LocalActor/RemoteActor je Zelle</td>
+          <td>Keine — unabhängige Spielstände</td>
+          <td>Empfohlen 2–8</td>
+        </tr>
+        <tr>
+          <td>Rust / DayZ / Minecraft<span class="meta">(Kontrast)</span></td>
+          <td>Dedizierter Server</td>
+          <td>Voll server-autoritativ</td>
+          <td>Serverseitig simuliert / Network Bubbles / Chunk-Distanz</td>
+          <td>Binär-Saves / Central Economy XML / Anvil-NBT</td>
+          <td>60–200+ je Titel</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="meta">Vollständige Tabelle mit allen 9 Plattformen und Tick/Sync-Details: siehe <code>2026-07-12-architecture-decision.md</code> im Repo.</p>
+
+  <h2 id="roadmap"><span class="num">03</span> Evolutions-Roadmap</h2>
+  <p>Ausgangspunkt: heutiger Cyberverse-Fork — Server.Native (C++/GameNetworkingSockets), Server.Managed (C#, Plugin-fähig), shared/protocol (zpp_bits), RED4ext+Redscript-Client. Verifiziert: Connect/Auth/World-Join, 10&nbsp;Hz Full-Broadcast, Action-Relay, Proxy-Follow-Lokomotion, Bot-Harness.</p>
+
+  <div class="roadmap">
+    <div class="phase">
+      <span class="phase-label">Phase 1 — höchster Hebel</span>
+      <h3>Interessens-Management</h3>
+      <p>Distanz-Radius (400–500 Einheiten) im Broadcast-Pfad: nur Peers in Reichweite bekommen Updates. Wandelt O(n²)-Fanout in O(n·k) — Voraussetzung, um über ~16 Spieler hinauszukommen.</p>
+      <p class="shippable">Shippable: sichtbar bessere Bandbreite beim nächsten Bot-Harness-Lasttest.</p>
+    </div>
+    <div class="phase">
+      <span class="phase-label">Phase 2</span>
+      <h3>Frequenz-Falloff + Delta-Encoding</h3>
+      <p>Nahe Peers 10&nbsp;Hz, mittlere 3–5&nbsp;Hz, ferne 1&nbsp;Hz/on-change. Positions-/Rotations-Quantisierung (~50&nbsp;Bit statt Rohfloats) plus Delta gegen letzten bestätigten Zustand.</p>
+      <p class="shippable">Shippable: Bandbreiten-Budget für 32+ Spieler.</p>
+    </div>
+    <div class="phase">
+      <span class="phase-label">Phase 3 — Fundament</span>
+      <h3>Server-autoritative Wirtschaft/Inventar</h3>
+      <p>Relationale DB (MySQL/MariaDB) mit Kern-Tabelle Charakter/Identität + JSON-Spalten für Inventar/Metadata. Jede Mutation eine atomare Server-Transaktion.</p>
+      <p class="shippable">Shippable: erste dauerhafte Spieler-Identität über Sessions hinweg.</p>
+    </div>
+    <div class="phase">
+      <span class="phase-label">Phase 4</span>
+      <h3>Kampf/Schaden mit Plausibilitäts-Gate</h3>
+      <p>EntityAction-Familie um Hit-Events erweitern; Server prüft Reichweite/Winkel/Cooldown, committet HP-Änderung selbst.</p>
+      <p class="shippable">Shippable: PvP-Grundlage (bean 2hum/y9rd).</p>
+    </div>
+    <div class="phase">
+      <span class="phase-label">Phase 5 — NPC-Sync</span>
+      <h3>Entity-Ownership &amp; Handover für kuratierte Gameplay-NPCs</h3>
+      <p><strong>Zwei NPC-Klassen, strikt getrennt (FiveM-Vorbild):</strong> ambiente NPCs (Verkehr, Passanten) bleiben komplett client-lokal und unsynchronisiert. Gameplay-relevante NPCs (Encounter-Gegner, Bosse, Händler) werden mit demselben Bauplan wie Remote-Spieler synchronisiert:</p>
+      <ul>
+        <li><strong>Ownership:</strong> ein Client besitzt die NPC, simuliert KI/Pfadfindung lokal, meldet Zustand als Fakten — Zuweisung proximity-basiert.</li>
+        <li><strong>Darstellung:</strong> andere Clients sehen sie als Proxy-Follow-Puppet (bestehende Lokomotions-Architektur wiederverwendet).</li>
+        <li><strong>Handover:</strong> Hysterese-Band wie alt:V (400/150) gegen Ownership-Flackern; explizites Disconnect-Cleanup.</li>
+        <li><strong>Kampf:</strong> gleiches Hit-Gate wie PvP (Phase 4) — Server committet NPC-HP als Transaktion.</li>
+      </ul>
+      <p><strong>Ziel: ~100 gleichzeitig aktive kuratierte NPCs</strong>, vor jeder Zusage per Bot-Harness lastgetestet. Voraussetzungen: Phase 1 (sonst reproduziert NPC-Sync sofort das O(n²)-Problem) und Phase 4.</p>
+      <p class="shippable">Shippable: erste PvE-Encounter-Zone mit synchronisierten Gegnern.</p>
+    </div>
+    <div class="phase later">
+      <span class="phase-label">Phase 6</span>
+      <h3>Session-/Instanz-Ebene</h3>
+      <p>In-Memory-Partitionierungsschlüssel (Bucket/Dimension-Äquivalent) + serverseitige Trigger-Zonen. Drop-in/Drop-out wird reine State-Mutation.</p>
+      <p class="shippable">Shippable: erste instanzierte Aktivität (Rennen/Deathmatch) neben Freeroam.</p>
+    </div>
+    <div class="phase later">
+      <span class="phase-label">Phase 7 — später</span>
+      <h3>Priority-Accumulator-Verfeinerung</h3>
+      <p>Erst relevant, wenn NPC-/Traffic-Sync dazukommt und Entity-Zahl 10–100× Spielerzahl übersteigt.</p>
+    </div>
+  </div>
+  <p>Jede Phase ist unabhängig testbar mit dem bestehenden Bot-Harness und dem <code>ingame-verify</code>-Skill.</p>
+
+  <h2 id="tradeoffs"><span class="num">04</span> Trade-off-Protokolle</h2>
+
+  <div class="tradeoff">
+    <p class="choice">① Full-Broadcast beibehalten <span class="meta">vs.</span> Interessens-Management sofort</p>
+    <p><strong>Gewählt:</strong> sofort (Phase 1).</p>
+    <p><span class="why-label">Warum</span> — O(n²) ist der erste Faktor, der beim Skalieren bricht; jede spätere Phase baut auf einem begrenzten Broadcast auf.</p>
+  </div>
+  <div class="tradeoff">
+    <p class="choice">② Client-forwarding-Bewegung <span class="meta">vs.</span> serverseitige Physik-Validierung</p>
+    <p><strong>Gewählt:</strong> Client-forwarding + billiger Plausibilitätsfilter.</p>
+    <p><span class="why-label">Warum</span> — Serverseitige Physik ist bei Cyberpunk 2077 architektonisch unmöglich (keine Headless-Simulation) — harte Randbedingung, keine Wahl.</p>
+  </div>
+  <div class="tradeoff">
+    <p class="choice">③ Reported-hit-Kampf mit Server-Veto <span class="meta">vs.</span> keine Validierung</p>
+    <p><strong>Gewählt:</strong> Server-Veto (Phase 4).</p>
+    <p><span class="why-label">Warum</span> — Ohne Validierung ist Godmode/One-Shot-Injection trivial. Kosten: erkennt kein Aimbot/Wallhack — offen kommuniziert, nicht versprochen.</p>
+  </div>
+  <div class="tradeoff">
+    <p class="choice">④ Ein Prozess + Partitionierungsschlüssel <span class="meta">vs.</span> Prozess pro Instanz</p>
+    <p><strong>Gewählt:</strong> ein Prozess + Bucket/Dimension.</p>
+    <p><span class="why-label">Warum</span> — FiveM und alt:V kamen unabhängig zum gleichen Schluss; Prozess-pro-Instanz bräuchte teure Connection-Migration.</p>
+  </div>
+  <div class="tradeoff">
+    <p class="choice">⑤ Fork evolvieren <span class="meta">vs.</span> Neubau</p>
+    <p><strong>Gewählt:</strong> evolvieren.</p>
+    <p><span class="why-label">Warum</span> — Jeder bekannte CP2077-Multiplayer-Neustart ist entweder abgebrochen oder brauchte 4–5 Jahre bis Alpha/Beta. Transport, Protokollansatz und Plugin-Server sind laut allen Recherchen bereits die richtigen Bausteine.</p>
+  </div>
+
+  <h2 id="risiken"><span class="num">05</span> Risiken bei 16 / 32 / 64 Spielern</h2>
+
+  <div class="risk-tiers">
+    <div class="risk-tier low">
+      <span class="n">16</span>
+      <h3>Noch tragbar</h3>
+      <ul>
+        <li>Full-Broadcast erzeugt spürbaren Overhead (256 statt 64 Update-Paare/Tick) — Kurve beginnt sich zu krümmen. <strong>Fix: Phase 1 vorher.</strong></li>
+        <li>Keine Ownership-Migration nötig, solange nur Spieler-Positionen synchronisiert werden.</li>
+      </ul>
+    </div>
+    <div class="risk-tier mid">
+      <span class="n">32</span>
+      <h3>Härtester Blocker ohne Phase 1</h3>
+      <ul>
+        <li>Payload-Fanout wird ~16× gegenüber dem 8-Bot-Test — der Punkt, an dem "hat bei 8 funktioniert" nachweislich bricht.</li>
+        <li>Ohne Phase 3 wird jeder Dupe-/Cheat-Exploit bei größerer, weniger vertrauter Testgruppe sichtbar und teuer.</li>
+        <li>Instanz-/Session-Ebene (Phase 6) wird nötig, sobald Freeroam + eine parallele Aktivität gleichzeitig laufen sollen.</li>
+      </ul>
+    </div>
+    <div class="risk-tier high">
+      <span class="n">64</span>
+      <h3>Community-Management wird Thema</h3>
+      <ul>
+        <li>Reine Positions-Sync verlangt zwingend Frequenz-Falloff + Delta-Encoding (Phase 2) — sonst zu hohe Bandbreite bei dichter Ansammlung.</li>
+        <li>Sobald NPCs/Traffic/Fahrzeuge synchronisiert werden: Ownership-Migration ohne Hysterese-Band → Teleport-on-Handover, Boundary-Thrashing (dokumentierte FiveM/alt:V/RAGE:MP-Bugs genau bei dieser Größenordnung).</li>
+        <li>Anti-Cheat-Erwartung muss spätestens hier explizit kommuniziert werden — kein Server in diesem Genre verhindert Aimbot/Wallhack architektonisch.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Übergreifendes Risiko bei allen drei Stufen — Legal/IP:</strong> sowohl alt:V als auch RAGE:MP wurden 2026 nach Jahren erfolgreichen Betriebs von Take-Two per Cease-and-Desist abgeschaltet. Keine direkte Entsprechung zu CDPR, aber ein Hinweis: Plattform-Überleben hängt von mehr als technischer Qualität ab.
+  </div>
+
+  <footer>
+    Quelle: 5-Agent-Recherche-Synthese, 2026-07-12 · Vollständiger Bericht mit allen Zitaten: <code>docs/research/2026-07-12-architecture-decision.md</code>
+  </footer>
+</main>

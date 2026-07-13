@@ -133,11 +133,33 @@ Sicherheitsgewinn zuerst. *Shippable: erste dauerhafte Spieler-Identität
 Winkel/Cooldown gegen zuletzt bekannte Positionen, committet HP-Änderung
 selbst. *Shippable: PvP-Grundlage, bean 2hum/y9rd.*
 
-**Phase 5 — Entity-Ownership & Handover (nur falls NPCs/Fahrzeuge/Physik-
-Objekte synchronisiert werden sollen).** Hysterese-Band wie alt:V
-(Stream-Distanz 400 / Migrations-Distanz 150), explizites Disconnect-
-Cleanup (FiveMs eigene Docs nennen das einen bekannten Footgun). Erst wenn
-Phase 1–4 stehen — nicht vorher nötig für reinen Spieler-zu-Spieler-Sync.
+**Phase 5 — NPC-Sync: Entity-Ownership & Handover für kuratierte
+Gameplay-NPCs (Ziel: ~100 gleichzeitig).** Zwei NPC-Klassen werden strikt
+getrennt (FiveM-Vorbild): **ambiente NPCs** (Verkehr, Passanten) bleiben
+komplett client-lokal und unsynchronisiert — jeder Client rendert seine
+eigene Population, niemand muss sich über Passant Nr. 4000 einig sein.
+**Gameplay-relevante NPCs** (Gegner in Encounter-Zonen, Bosse, Händler)
+werden synchronisiert, und zwar mit demselben Bauplan wie Remote-Spieler:
+- **Ownership:** ein Client "besitzt" die NPC, simuliert ihre KI/Pfadfindung
+  lokal und meldet Position/Zustand als Fakten — wie ein Spieler heute seine
+  eigene Position meldet. Zuweisung proximity-basiert.
+- **Darstellung:** alle anderen Clients sehen die NPC als Proxy-Follow-Puppet
+  (bestehende Lokomotions-Architektur, unverändert wiederverwendet).
+- **Handover:** Hysterese-Band wie alt:V (Stream-Distanz 400 / Migrations-
+  Distanz 150), damit Ownership an der Grenze nicht flackert; explizites
+  Disconnect-Cleanup (FiveMs eigene Docs nennen verwaiste Entities einen
+  bekannten Footgun).
+- **Kampf gegen NPCs:** gleiches Gate wie PvP (Phase 4) — Client meldet Hit,
+  Server prüft Plausibilität und committet HP als Transaktion, damit alle
+  Clients sich einig sind, ob die NPC lebt.
+
+Voraussetzungen: Phase 1 (sonst reproduziert 100 NPCs × alle Spieler sofort
+wieder das O(n²)-Problem) und Phase 4 (Hit-Gate). Die Rendering-/Physik-Last
+ist voraussichtlich nicht der Engpass — Cyberpunk simuliert im Singleplayer
+problemlos Hunderte Passanten; der Engpass ist die Netzwerk-/Ownership-
+Logik. Das ~100-NPC-Ziel wird vor jeder Zusage mit dem Bot-Harness
+lastgetestet (Bots als NPC-Owner-Simulatoren). *Shippable: erste
+PvE-Encounter-Zone mit synchronisierten Gegnern.*
 
 **Phase 6 — Session-/Instanz-Ebene.** In-Memory-Partitionierungsschlüssel
 im Server.Managed-Entity-Modell (Bucket/Dimension-Äquivalent) + serverseitige
@@ -227,11 +249,11 @@ Jede Phase ist unabhängig testbar mit dem bestehenden Bot-Harness und dem
   Encoding (Phase 2) — sonst ist die Bandbreite pro Client selbst mit
   Interessens-Management noch zu hoch bei dichter Ansammlung (z. B. alle in
   einem Nachtclub).
-- Sobald NPCs/Traffic/Fahrzeuge mitsynchronisiert werden (nicht Teil des
-  heutigen Scopes, aber Teil des GTA-Online-Ziels), wird Entity-Ownership-
-  Migration (Phase 5) ohne Hysterese-Band zum sichtbaren Problem: Teleport-
-  on-Handover und Boundary-Thrashing sind in FiveM/alt:V/RAGE:MP-Foren gut
-  dokumentierte, wiederkehrende Bugs genau bei dieser Größenordnung.
+- Sobald gameplay-relevante NPCs/Fahrzeuge mitsynchronisiert werden (Phase 5,
+  Ziel ~100 kuratierte NPCs), wird Entity-Ownership-Migration ohne
+  Hysterese-Band zum sichtbaren Problem: Teleport-on-Handover und
+  Boundary-Thrashing sind in FiveM/alt:V/RAGE:MP-Foren gut dokumentierte,
+  wiederkehrende Bugs genau bei dieser Größenordnung.
 - Anti-Cheat-Erwartung muss spätestens hier explizit kommuniziert werden:
   kein Server in diesem Genre verhindert Aimbot/Wallhack architektonisch —
   bei 64 öffentlichen Spielern wird das erstmals ein Community-Management-
