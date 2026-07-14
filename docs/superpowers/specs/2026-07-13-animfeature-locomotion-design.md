@@ -196,11 +196,39 @@ Idle-Pose ("gleiten"). Fünf In-Game-Zyklen, alle Hypothesen dokumentiert:
    `ExternalEvent`-Vokabeln des Graphen sind reine Kampf-Events
    (hit/Shoot/Reload) — es gibt keine Locomotion-Events.
 
-**Arbeits-Hypothese:** Der residente KI-/Movement-Stack des Puppets
-(Archetyp-Behavior, auch ohne Kommandos aktiv) schreibt die
-Locomotion-Features jeden Tick und gewinnt gegen unsere Events; ein
-Script-Hebel zum Abschalten existiert nicht (`AIComponent` bietet nur
-`StopExecutingCommand`/`DisableCollider`).
+**Arbeits-Hypothese (nach Runde 1-4):** Der residente KI-/Movement-Stack des
+Puppets schreibt die Locomotion-Features jeden Tick und gewinnt gegen unsere
+Events; ein Script-Hebel zum Abschalten existiert nicht (`AIComponent`
+bietet nur `StopExecutingCommand`/`DisableCollider`).
+
+**Diskriminator-Runden 5-7 (hit-Feature, 2026-07-14) — Hypothese verschärft:**
+Ein `hit`-Feature (`hitType=3` Stagger) wurde als unübersehbarer Testfall
+alle 2,5 s auf stehende Puppets angewandt — (a) per direktem
+`AnimInputSetterAnimFeature`-QueueEvent, (b) per Spiel-eigenem
+`AnimationControllerComponent.ApplyFeature`-Helper, (c) zusätzlich mit
+`PushEvent(n"hit")` (der Graph hat 16 ExternalEvent-Transitions auf "hit").
+**Alle drei negativ — kein Stagger.** Der decompilierte Spielcode erklärt
+warum (`aiHitReactionTasks.swift:402-405`): normale Treffer starten ein
+**`m_hitReactionAction`-Objekt** (`Stop/Setup/Launch`) aus dem KI-Action-
+System; Feature+Event sind nur Begleitdaten. **Strukturelle Erkenntnis:
+NPC-Animationen sind durchgängig hinter der KI-Action-Maschinerie gekapselt
+— von außen geschriebene Features/Events allein treiben den Graphen nicht.**
+
+**Offene Forschungspfade (Aufwand geschätzt):**
+1. **KI-Action-Route:** die `AIActionAnimation`-/ActionHelper-Objekte
+   verstehen und selbst starten (wie `m_hitReactionAction`) — mittlerer
+   RE-Aufwand, bleibt aber im KI-Budget-Problem (Actions laufen im
+   AI-Kontext).
+2. **AI-freies Puppet-Template:** eigenes `.ent` ohne KI-Komponenten
+   (ArchiveXL, Spike-4-Territorium) — klärt, ob der Graph ohne residenten
+   KI-Stack auf externe Features hört; passt zur langfristigen
+   "eigenes Spielermodell"-Richtung. Aufwand: Asset-Arbeit + Spawn-Umbau.
+3. **Workspot-/Slot-Animation-Route:** Walk-Zyklen als Slot-Anims direkt
+   abspielen (AMM-Posen-Muster) — garantiert sichtbar, aber Blending/
+   Übergänge manuell.
+4. **Pragmatischer Zwischenstand:** Nah-Cap-Hybrid (Proxy-Follow nur für
+   die N nächsten Puppets, Interpolation für alle weiteren) — ein Tag,
+   löst Dichte + Nah-Feel mit bewährter Technik, überbrückt bis 1-3.
 
 ## Quellen-Notiz
 
