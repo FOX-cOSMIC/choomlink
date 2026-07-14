@@ -166,6 +166,42 @@ Clientseitiger Umbau im Fork (red4ext + RedscriptModule). Als Upstream-PR
 erst sinnvoll, wenn Stufe 3 bestanden ist — dann als Paket
 "AI-free locomotion" anbieten.
 
+## Stufe-1/2-Ergebnisse (2026-07-14, nach Implementierung)
+
+**Was funktioniert (verifiziert):**
+- **Interpolation ersetzt Proxy-Follow vollständig.** 4-Bot-Kreis: Puppets
+  gleiten exakt auf der Netzwerkbahn, **null 8-m-Catch-up-Teleports** im
+  Log (vorher der Dauerzustand bei Desyncs), Zähler stabil/verlustfrei,
+  keine Fehler. Proxy-Entity, Follow-Kommando und damit KI-Budget-Verbrauch
+  und Stop-Totzone sind ersatzlos weg.
+- **Event-Pipeline bis zum Entity:** native Feature-Konstruktion
+  (`Red::MakeScriptedHandle`) + `AnimInputSetterAnimFeature`-`QueueEvent`
+  laufen fehlerfrei (keine Warnungen).
+
+**Was (noch) nicht funktioniert:** Beinanimation. Puppets bewegen sich in
+Idle-Pose ("gleiten"). Fünf In-Game-Zyklen, alle Hypothesen dokumentiert:
+
+1. Runde 1 (redscript, `AnimFeature_PlayerMovement` unter 6 Namen): negativ —
+   **falsche Klasse**, der NPC-Graph liest kein `AnimFeature_Movement`.
+2. WolvenKit-Dump `base\gameplay\anim_graphs\humanoid.animgraph` (420 MB
+   JSON): Feature-Inputs explizit deklariert — `locomotion`
+   (`AnimFeature_Locomotion`), `crowd_locomotion`/`crowdAnimFeature`
+   (Crowd), `lookAt`, `hit`, `stanceState`… **Landkarte für alle künftigen
+   Spikes.** Transition-Conditions decodiert: `locomotion.action` ist
+   `move::LocomotionAction` (Greater 1 = bewegt; 5=Start/6=Move/7=Stop),
+   `locomotion.style` ist `Locomotion_Style` (2=Walk/3=Jog/4=Sprint).
+3. Runde 2-4 (C++-Feed, korrekte Klassen+Enums, pro Update → pro Frame →
+   plus Crowd-Zweig): alle negativ.
+4. **PushEvent-Fallback der Spec ist falsifiziert:** die
+   `ExternalEvent`-Vokabeln des Graphen sind reine Kampf-Events
+   (hit/Shoot/Reload) — es gibt keine Locomotion-Events.
+
+**Arbeits-Hypothese:** Der residente KI-/Movement-Stack des Puppets
+(Archetyp-Behavior, auch ohne Kommandos aktiv) schreibt die
+Locomotion-Features jeden Tick und gewinnt gegen unsere Events; ein
+Script-Hebel zum Abschalten existiert nicht (`AIComponent` bietet nur
+`StopExecutingCommand`/`DisableCollider`).
+
 ## Quellen-Notiz
 
 Spielcode-Zitate stammen aus dem öffentlichen decompilierten
